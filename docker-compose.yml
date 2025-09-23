@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  learn-qr-code:
+    image: python:3.13
+    container_name: learn-qr-code
+    working_dir: /app
+    volumes:
+      - .:/app
+    tty: true
+    stdin_open: true
+    command: bash
