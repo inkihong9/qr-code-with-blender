@@ -1,9 +1,7 @@
-version: "3.9"
-
 services:
-  blender-dev:
+  qr-code-with-blender:
     build: .
-    container_name: blender-dev
+    container_name: qr-code-with-blender
     volumes:
       - .:/workspace
     working_dir: /workspace
