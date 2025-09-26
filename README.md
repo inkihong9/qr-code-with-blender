@@ -1,10 +1,16 @@
 # about
 i want this to be a blender add-on where a user inputs data and it creates a 3D image of QR code that can be scanned in real life
 
+# rules and discipline
+1. use of chatgpt or copilot (or any other preferred AI tool) is encouraged
+2. **IMPORTANT** review the code and spend time to understand **AND** document the code it generates!!
+3. think through the steps and algorithm, and work on it in small chunk at a time instead of throwing everything into the AI and expect it to magically "know" your plan from start to finish
+
 # high level algorithm
-1. create a single icosphere mesh
+1. cleanup the scene
+1. create a single uv_sphere mesh
 2. create black and white materials
-3. assign both materials to the icosphere mesh, where top half is black and bottom half is white
+3. assign both materials to the uv_sphere mesh, where top half is black and bottom half is white
 4. get the qr code matrix
 5. iterate through the qr code matrix
     1. for each row in the matrix: (y-axis)
@@ -18,6 +24,7 @@ i want this to be a blender add-on where a user inputs data and it creates a 3D 
         1. increment y by 0.1 meters
 
 # script steps (tbd)
-1. create_materials.py
-2. create_icosphere_meshes.py
+1. cleanup_scene.py (step 1)
+2. create_stone.py (step 2)
+3. create_materials.py (step 3)
 
