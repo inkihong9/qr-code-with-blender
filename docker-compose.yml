@@ -1,21 +1,10 @@
 version: "3.9"
-
 services:
-  blender-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: blender-addon-dev
-    working_dir: /workspace
+  blender-gui:
+    build: .
     volumes:
-      - .:/workspace                                   # Mount your project folder
-      - ./blender_config:/root/.config/blender/4.5     # Persist Blender config/add-ons
-      - /tmp/.X11-unix:/tmp/.X11-unix                  # GUI support via X11
+      - ./addons:/workspace/addons
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
     environment:
       - DISPLAY=${DISPLAY}
-      - XAUTHORITY=/root/.Xauthority
-    devices:
-      - /dev/dri:/dev/dri                              # Optional GPU acceleration
-    tty: true
-    stdin_open: true
-    command: blender
+    working_dir: /workspace

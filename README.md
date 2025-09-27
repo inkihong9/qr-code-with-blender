@@ -1,6 +1,17 @@
 # about
 i want this to be a blender add-on where a user inputs data and it creates a 3D image of QR code that can be scanned in real life
 
+# prerequisites
+* docker
+
+# setup (need to come back to this)
+1. allow docker containers to connect to your X server: run command `xhost +local:root`
+2. build the container: run command `docker-compose build --no-cache`
+3. run blender gui: run command `docker-compose up`
+
+# to build an addon
+1. create a zip file: run command `zip -r qr_code_addon.zip qr_code_addon`
+
 # rules and discipline
 1. use of chatgpt or copilot (or any other preferred AI tool) is encouraged
 2. **IMPORTANT** review the code and spend time to understand **AND** document the code it generates!!

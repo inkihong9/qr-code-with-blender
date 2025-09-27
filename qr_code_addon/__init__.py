@@ -1,6 +1,6 @@
 bl_info = {
-    "name": "hey whats up",
-    "author": "Your Name",
+    "name": "this is my first blender addon",
+    "author": "inki hong",
     "version": (1, 0),
     "blender": (4, 5, 0),
     "location": "View3D > Sidebar",
