@@ -6,6 +6,29 @@ i want this to be a blender add-on where a user inputs data and it creates a 3D 
 2. **IMPORTANT** review the code and spend time to understand **AND** document the code it generates!!
 3. think through the steps and algorithm, and work on it in small chunk at a time instead of throwing everything into the AI and expect it to magically "know" your plan from start to finish
 
+# folder structure
+root directory of the repo should contain a docker-compose.yml file, Dockerfile, README.md, and then the root directory of the add-on that i will make
+<br />
+
+it's really important that add-on's root directory name should be alpha-numeric with underscores ( _ ), should NOT use dashes ( - )
+<br />
+
+for example:
+<br />
+`my_simple_addon < correct`
+<br />
+`my-simple-addon < WRONG`
+<br />
+see below for the simple folder structure
+```
+my_simple_addon/
+    __init__.py
+    script1.py
+    script2.py
+
+my_simple_addon.zip 
+```
+
 # high level algorithm
 1. cleanup the scene
 1. create a single uv_sphere mesh

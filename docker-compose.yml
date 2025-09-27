@@ -1,8 +1,21 @@
+version: "3.9"
+
 services:
-  qr-code-with-blender:
-    build: .
-    container_name: qr-code-with-blender
-    volumes:
-      - .:/workspace
+  blender-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blender-addon-dev
     working_dir: /workspace
+    volumes:
+      - .:/workspace                                   # Mount your project folder
+      - ./blender_config:/root/.config/blender/4.5     # Persist Blender config/add-ons
+      - /tmp/.X11-unix:/tmp/.X11-unix                  # GUI support via X11
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/root/.Xauthority
+    devices:
+      - /dev/dri:/dev/dri                              # Optional GPU acceleration
     tty: true
+    stdin_open: true
+    command: blender

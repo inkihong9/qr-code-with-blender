@@ -1,20 +1,17 @@
-# Use Ubuntu 22.04 (glibc >= 2.28)
-FROM ubuntu:22.04
+# Use Blender LTS 4.5.3
+FROM blender:4.5.3
 
-# Prevent interactive prompts during install
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install Blender, Python, pip, and utilities
-RUN apt-get update && apt-get install -y \
-    blender \
-    python3 \
-    python3-pip \
-    git \
-    curl \
+# Install Python dev tools and common utilities
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3-pip \
+        git \
+        curl \
+        vim \
     && rm -rf /var/lib/apt/lists/*
 
-# Make "python" command point to python3
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+# Upgrade Blender's Python pip, setuptools, wheel
+RUN blender --background --python-expr "import ensurepip; ensurepip.bootstrap(); import pip; pip.main(['install', '--upgrade', 'pip', 'setuptools', 'wheel'])"
 
-# Set default working directory
+# Set working directory for your project/addons
 WORKDIR /workspace
