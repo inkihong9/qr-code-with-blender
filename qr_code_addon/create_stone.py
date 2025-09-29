@@ -2,6 +2,7 @@ import bpy
 import bmesh
 
 # NOTE: all measurements in meters
+# output: a stone mesh with top half jet black and bottom half ivory white
 
 '''
 step 1. create a stone mesh with these properties:
@@ -76,55 +77,3 @@ bpy.ops.object.material_slot_assign()
 # Update mesh and return to object mode
 bmesh.update_edit_mesh(stone.data, loop_triangles=False, destructive=False)
 bpy.ops.object.mode_set(mode='OBJECT')
-
-
-'''
-
-
-
-
-# Select top half (Z >= 0)
-bpy.ops.mesh.select_all(action='DESELECT')
-bpy.ops.mesh.select_all(action='SELECT')  # temporarily select all
-bpy.ops.mesh.region_to_loop()  # makes sure boundary is clean (optional)
-bpy.ops.mesh.select_all(action='DESELECT')
-
-bpy.ops.mesh.select_all(action='SELECT')  # select everything first
-bpy.ops.mesh.bisect(
-    plane_co=(0, 0, 0),
-    plane_no=(0, 0, 1),
-    clear_inner=False,
-    clear_outer=False
-)
-
-# Assign selected (top half) to black material
-bpy.ops.object.material_slot_set(assign=True)
-
-# Switch back to Object Mode
-bpy.ops.object.mode_set(mode='OBJECT')
-
-# Now assign bottom half to white
-bpy.ops.object.mode_set(mode='EDIT')
-bpy.ops.mesh.select_all(action='SELECT')
-bpy.ops.mesh.bisect(
-    plane_co=(0, 0, 0),
-    plane_no=(0, 0, -1),
-    clear_inner=False,
-    clear_outer=False
-)
-stone.active_material_index = 1  # White material slot
-bpy.ops.object.material_slot_set(assign=True)
-
-# Switch back to Object Mode
-bpy.ops.object.mode_set(mode='OBJECT')
-
-
-# 2. Create a real duplicate with its own mesh data
-stone_copy = stone.copy()
-stone_copy.data = stone.data.copy()
-stone_copy.name = "stone_copy"
-stone_copy.location = (3, 0, 0)
-
-# Link the duplicate to the current collection
-bpy.context.collection.objects.link(stone_copy)
-'''
