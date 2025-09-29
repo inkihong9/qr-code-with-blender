@@ -1,10 +1,14 @@
 import bpy
 import bmesh
 
+# NOTE: all measurements in meters
+
 '''
-1. create a UV sphere with radius of 5cm at location x = -1m, y = 1m, z = 0m
-2. name it stone
-3. scale it by 30% in z-axis
+step 1. create a stone mesh with these properties:
+- radius = 0.05m
+- coordinate = (-1m, 1m, 0m)
+- name = stone
+- scale z-axis by 30%
 '''
 bpy.ops.mesh.primitive_uv_sphere_add(radius=0.05, location=(-1,1,0))
 stone = bpy.context.active_object
@@ -12,44 +16,42 @@ stone.name = "stone"
 stone.scale = (1,1,0.3)
 
 
-
-
-
-# Create black material
-black_mat = bpy.data.materials.new(name="Black_Material")
+'''
+step 2. create 2 materials
+- jet black (R:54, G:69, B:79)
+- ivory white (R:242, G:239, B:222)
+'''
+black_mat = bpy.data.materials.new(name="jet-black")
 black_mat.use_nodes = True
 nodes = black_mat.node_tree.nodes
 bsdf = nodes.get("Principled BSDF")
 if bsdf:
-    bsdf.inputs["Base Color"].default_value = (0, 0, 0, 1)  # Black (R,G,B,A)
+    bsdf.inputs["Base Color"].default_value = (0.002, 0.000607, 0.000911, 1)
 
-# Create white material
-white_mat = bpy.data.materials.new(name="White_Material")
+white_mat = bpy.data.materials.new(name="ivory-white")
 white_mat.use_nodes = True
 nodes = white_mat.node_tree.nodes
 bsdf = nodes.get("Principled BSDF")
 if bsdf:
-    bsdf.inputs["Base Color"].default_value = (1, 1, 1, 1)  # White (R,G,B,A)
+    bsdf.inputs["Base Color"].default_value = (1, 0.939, 0.584, 1)
 
+
+'''
+step 3. assign materials to stone
+'''
 stone.data.materials.clear()
-
-
-
-
 stone.data.materials.append(white_mat)
-
 stone.data.materials.append(black_mat)
 
-
-
-
-
-
+'''
+step 4. color the stone
+- top half = jet black
+- bottom half = ivory white
+'''
 
 # Switch to Edit Mode
 bpy.context.view_layer.objects.active = stone
 bpy.ops.object.mode_set(mode='EDIT')
-
 
 # Access the mesh in edit mode
 mesh = bmesh.from_edit_mesh(stone.data)
@@ -66,8 +68,6 @@ for f in mesh.faces:
 
 # Update the selection in viewport
 bmesh.update_edit_mesh(stone.data, loop_triangles=False, destructive=False)
-
-print("Selected all faces in 'stone' with Z > 0")
 
 # Assign white material (slot 1) to selected faces
 stone.active_material_index = 1
