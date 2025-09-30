@@ -1,4 +1,6 @@
 import bpy
+import os
+import sys
 
 
 class OBJECT_OT_add_custom_cube(bpy.types.Operator):
@@ -23,6 +25,14 @@ def add_custom_menu(self, context):
 
 
 def register():
+    # Path to the "libs" folder inside the extension
+    addon_dir = os.path.dirname(__file__)
+    libs_dir = os.path.join(addon_dir, "libs")
+
+    # Add to sys.path if not already there
+    if libs_dir not in sys.path:
+        sys.path.append(libs_dir)
+        
     bpy.utils.register_class(OBJECT_OT_add_custom_cube)
     # Append our operator into the "Add Mesh" menu (Shift + A → Mesh → …)
     bpy.types.VIEW3D_MT_mesh_add.append(add_custom_menu)
