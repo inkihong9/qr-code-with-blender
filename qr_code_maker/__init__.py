@@ -1,6 +1,7 @@
 import bpy
 import os
 import sys
+from . import test_me, cleanup_scene, create_icosphere_meshes, create_materials, create_stone, make_qr_code_matrix
 
 
 class OBJECT_OT_add_custom_cube(bpy.types.Operator):
@@ -25,6 +26,10 @@ def add_custom_menu(self, context):
 
 
 def register():
+    '''
+    this will add all packages in the "libs" folder to sys.path
+    so i can use external packages like qrcode
+    '''
     # Path to the "libs" folder inside the extension
     addon_dir = os.path.dirname(__file__)
     libs_dir = os.path.join(addon_dir, "libs")
@@ -32,7 +37,11 @@ def register():
     # Add to sys.path if not already there
     if libs_dir not in sys.path:
         sys.path.append(libs_dir)
-        
+
+    # Call the test function to see if it works
+    test_me.test_function()
+    
+    # Register our operator    
     bpy.utils.register_class(OBJECT_OT_add_custom_cube)
     # Append our operator into the "Add Mesh" menu (Shift + A → Mesh → …)
     bpy.types.VIEW3D_MT_mesh_add.append(add_custom_menu)
