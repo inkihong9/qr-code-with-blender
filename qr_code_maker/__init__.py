@@ -1,7 +1,8 @@
 import bpy
 import os
 import sys
-from . import test_me, cleanup_scene, create_icosphere_meshes, create_materials, create_stone, make_qr_code_matrix
+from . import test_me
+# , cleanup_scene, create_icosphere_meshes, create_materials, create_stone, make_qr_code_matrix
 
 
 class OBJECT_OT_add_custom_cube(bpy.types.Operator):
