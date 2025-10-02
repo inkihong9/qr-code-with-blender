@@ -24,6 +24,10 @@ i want this to be a blender add-on where a user inputs data and it creates a 3D 
 1. in the `qr_code_maker` directory, run command `blender --command extension build`
 2. this is gonna create a new zip file named `qr_code_maker-1.0.0.zip` (version specified in the manifest file is 1.0.0, so it's probably that)
 
+# to install additional pip packages
+1. `libs` folder must exist in the same directory as this script
+2. run command `python3 -m pip install <package_name> -t ./libs`
+
 # rules and discipline
 1. use of chatgpt or copilot (or any other preferred AI tool) is encouraged
 2. **IMPORTANT** review the code and spend time to understand **AND** document the code it generates!!
@@ -48,43 +52,5 @@ i want this to be a blender add-on where a user inputs data and it creates a 3D 
 
 # helpful links
 [how to build extensions](https://docs.blender.org/manual/en/4.2/advanced/extensions/getting_started.html)
+<br />
 [blender python api](https://docs.blender.org/api/current/index.html)
-
-# script steps (deprecated)
-1. cleanup_scene.py (step 1)
-2. create_stone.py (step 2)
-3. create_materials.py (step 3)
-
-# prerequisites (this is probably deprecated)
-* docker
-
-# setup (this is probably dprecated)
-1. allow docker containers to connect to your X server: run command `xhost +local:root`
-2. build the container: run command `docker-compose build --no-cache`
-3. run blender gui: run command `docker-compose up`
-
-# folder structure (deprecated)
-root directory of the repo should contain a docker-compose.yml file, Dockerfile, README.md, and then the root directory of the add-on that i will make
-<br />
-
-it's really important that add-on's root directory name should be alpha-numeric with underscores ( _ ), should NOT use dashes ( - )
-<br />
-
-for example:
-<br />
-`my_simple_addon < correct`
-<br />
-`my-simple-addon < WRONG`
-<br />
-see below for the simple folder structure
-```
-my_simple_addon/
-    __init__.py
-    script1.py
-    script2.py
-
-my_simple_addon.zip 
-```
-
-
-
