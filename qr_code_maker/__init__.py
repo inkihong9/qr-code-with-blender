@@ -1,5 +1,7 @@
 import bpy
 
+from . import test_me
+
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
     """Add a Custom Mesh"""
@@ -42,6 +44,7 @@ def menu_func(self, context):
 
 # this function is called when the add-on is enabled in Edit > Preferences > Add-ons
 def register():
+    test_me.test_function()
     bpy.utils.register_class(MESH_OT_add_custom_mesh)
     bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
 
