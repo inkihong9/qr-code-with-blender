@@ -1,54 +1,55 @@
 import bpy
-import os
-import sys
-from . import test_me
-# , cleanup_scene, create_icosphere_meshes, create_materials, create_stone, make_qr_code_matrix
 
 
-class OBJECT_OT_add_custom_cube(bpy.types.Operator):
-    bl_idname = "mesh.add_custom_cube"
-    bl_label = "okay im gonna reload the script from blender"
-    bl_description = "okay lets try this again..."
+class MESH_OT_add_custom_mesh(bpy.types.Operator):
+    """Add a Custom Mesh"""
+    bl_idname = "mesh.add_custom_mesh"
+    bl_label = "Add Custom Mesh"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
-        bpy.ops.mesh.primitive_cube_add()
-        self.report({'INFO'}, "Custom Cube added!")
-        return {'FINISHED'}
-
-
-# Menu function that tells Blender where to put our operator
-def add_custom_menu(self, context):
-    self.layout.operator(
-        OBJECT_OT_add_custom_cube.bl_idname,
-        text=OBJECT_OT_add_custom_cube.bl_label,
-        icon='MESH_CUBE'
+    # User input fields (appear in popup)
+    data: bpy.props.StringProperty(
+        name="Data",
+        default="https://github.com/inkihong9",
+        description="Data to encode in the mesh"
     )
 
+    # this function is called when OK is clicked in the popup modal
+    def execute(self, context):
+        # get user input
+        input_data = self.data
+        
+        # Example: create a circle mesh with user inputs
+        bpy.ops.mesh.primitive_circle_add(
+            radius=1,
+            vertices=10,
+            enter_editmode=False,
+            align='WORLD',
+            location=(0, 0, 0)
+        )
+        return {'FINISHED'}
 
+    # this function is called when the operator (Add > Mesh > Custom Mesh) is clicked
+    def invoke(self, context, event):
+        # This makes the popup appear before execution
+        return context.window_manager.invoke_props_dialog(self)
+
+
+# Register in the Add > Mesh menu
+def menu_func(self, context):
+    self.layout.operator(MESH_OT_add_custom_mesh.bl_idname,
+                         text="Custom Mesh")
+
+# this function is called when the add-on is enabled in Edit > Preferences > Add-ons
 def register():
-    '''
-    this will add all packages in the "libs" folder to sys.path
-    so i can use external packages like qrcode
-    '''
-    # Path to the "libs" folder inside the extension
-    addon_dir = os.path.dirname(__file__)
-    libs_dir = os.path.join(addon_dir, "libs")
+    bpy.utils.register_class(MESH_OT_add_custom_mesh)
+    bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
 
-    # Add to sys.path if not already there
-    if libs_dir not in sys.path:
-        sys.path.append(libs_dir)
-
-    # Call the test function to see if it works
-    test_me.test_function()
-    
-    # Register our operator    
-    bpy.utils.register_class(OBJECT_OT_add_custom_cube)
-    # Append our operator into the "Add Mesh" menu (Shift + A → Mesh → …)
-    bpy.types.VIEW3D_MT_mesh_add.append(add_custom_menu)
-
-
+# this function is called when the add-on is disabled in Edit > Preferences > Add-ons
 def unregister():
-    # Clean up on unregister
-    bpy.types.VIEW3D_MT_mesh_add.remove(add_custom_menu)
-    bpy.utils.unregister_class(OBJECT_OT_add_custom_cube)
+    bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)
+    bpy.utils.unregister_class(MESH_OT_add_custom_mesh)
+
+
+if __name__ == "__main__":
+    register()
