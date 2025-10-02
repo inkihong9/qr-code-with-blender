@@ -17,7 +17,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
         # get user input
-        data = self.data
+        input_data = self.data
         
         # Example: create a circle mesh with user inputs
         bpy.ops.mesh.primitive_circle_add(
