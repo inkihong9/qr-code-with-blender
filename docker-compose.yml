@@ -1,0 +1,8 @@
+services:
+  qr-code-with-blender:
+    build: .
+    container_name: qr-code-with-blender
+    volumes:
+      - .:/app
+    tty: true
+    stdin_open: true
