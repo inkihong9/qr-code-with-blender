@@ -1,9 +1,3 @@
-'''
-instructions for installing additional pip packages
-1. "libs" folder must exist in the same directory as this script
-2. run command "python3 -m pip install <package_name> -t ./libs"
-'''
-
 import os
 import sys
 
