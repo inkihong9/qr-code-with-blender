@@ -1,5 +1,5 @@
 import bpy
-from . import package_handler
+from . import package_handler, encode_data, mesh_helper
 
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
@@ -12,22 +12,30 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     data: bpy.props.StringProperty(
         name="Data",
         default="https://github.com/inkihong9",
-        description="Data to encode in the mesh"
+        description="Data to encode for creating QR code"
     )
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
-        # get user input
+        # step 1. get user input
         input_data = self.data
+
+        # step 2. get QR code matrix from user input
+        qr_matrix = encode_data.get_qr_matrix(input_data)
+
+        # step 3. create stone for duplicating throughout the QR code matrix
+        mesh_helper.create_stone()
+
+        # step 4. duplicate stone based on the QR code matrix
         
         # Example: create a circle mesh with user inputs
-        bpy.ops.mesh.primitive_circle_add(
-            radius=1,
-            vertices=10,
-            enter_editmode=False,
-            align='WORLD',
-            location=(0, 0, 0)
-        )
+        # bpy.ops.mesh.primitive_circle_add(
+        #     radius=1,
+        #     vertices=10,
+        #     enter_editmode=False,
+        #     align='WORLD',
+        #     location=(0, 0, 0)
+        # )
         return {'FINISHED'}
 
     # this function is called when the operator (Add > Mesh > Custom Mesh) is clicked
