@@ -5,7 +5,7 @@ from . import lib_loader
 lib_loader.import_libs()
 
 # only then it can import external libraries
-from . import qr_utils, mesh_utils
+from .utils import qr_utils, mesh_utils, material_utils
 
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
@@ -32,7 +32,11 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # step 3. create stone for duplicating throughout the QR code matrix
         mesh_utils.create_stone()
 
-        # step 4. duplicate stone based on the QR code matrix
+        # step 4. create 2 materials: black and white
+        white_mat = material_utils.create_material("ivory-white", (1, 0.939, 0.584, 1))
+        black_mat = material_utils.create_material("jet-black", (0.002, 0.000607, 0.000911, 1))
+
+        # step n. duplicate stone based on the QR code matrix
         
         # Example: create a circle mesh with user inputs
         # bpy.ops.mesh.primitive_circle_add(
@@ -42,6 +46,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         #     align='WORLD',
         #     location=(0, 0, 0)
         # )
+        
         return {'FINISHED'}
 
     # this function is called when the operator (Add > Mesh > Custom Mesh) is clicked
