@@ -1,17 +1,11 @@
 import bpy
 
-from . import package_handler, encode_data, mesh_helper
+# first thing it should do is import everything in the libs folder before doing anything else
+from . import lib_loader
+lib_loader.import_libs()
 
-import os
-import sys
-
-# Path to the "libs" folder inside the extension
-addon_dir = os.path.dirname(__file__)
-libs_dir = os.path.join(addon_dir, "libs")
-
-# Add to sys.path if not already there
-if libs_dir not in sys.path:
-    sys.path.append(libs_dir)
+# only then it can import external libraries
+from . import qr_utils, mesh_utils
 
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
@@ -33,10 +27,10 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         input_data = self.data
 
         # step 2. get QR code matrix from user input
-        qr_matrix = encode_data.get_qr_matrix(input_data)
+        qr_matrix = qr_utils.get_qr_matrix(input_data)
 
         # step 3. create stone for duplicating throughout the QR code matrix
-        mesh_helper.create_stone()
+        mesh_utils.create_stone()
 
         # step 4. duplicate stone based on the QR code matrix
         
@@ -63,7 +57,6 @@ def menu_func(self, context):
 
 # this function is called when the add-on is enabled in Edit > Preferences > Add-ons
 def register():
-    # package_handler.import_libs()
     bpy.utils.register_class(MESH_OT_add_custom_mesh)
     bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
 
