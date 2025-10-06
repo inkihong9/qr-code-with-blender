@@ -1,5 +1,17 @@
 import bpy
+
 from . import package_handler, encode_data, mesh_helper
+
+import os
+import sys
+
+# Path to the "libs" folder inside the extension
+addon_dir = os.path.dirname(__file__)
+libs_dir = os.path.join(addon_dir, "libs")
+
+# Add to sys.path if not already there
+if libs_dir not in sys.path:
+    sys.path.append(libs_dir)
 
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
@@ -51,7 +63,7 @@ def menu_func(self, context):
 
 # this function is called when the add-on is enabled in Edit > Preferences > Add-ons
 def register():
-    package_handler.import_libs()
+    # package_handler.import_libs()
     bpy.utils.register_class(MESH_OT_add_custom_mesh)
     bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
 
