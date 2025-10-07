@@ -46,10 +46,16 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         black_stone.data.materials.clear()
         black_stone.data.materials.append(black_mat)
 
-        # step n. duplicate stone based on the QR code matrix
+        # step 6. build QR code by duplicating the white and black stones based on the QR code matrix
+        mesh_utils.build_qr_code(qr_matrix, white_stone, black_stone)
 
-        # step n+1. hide the original stones from view
+        # step 7. hide the original stones from view
+        white_stone.hide_set(True)
+        white_stone.hide_render = True
+        black_stone.hide_set(True)
+        black_stone.hide_render = True
         
+        # step 8. apparently this return value is needed
         return {'FINISHED'}
 
     # this function is called when the operator (Add > Mesh > Custom Mesh) is clicked
