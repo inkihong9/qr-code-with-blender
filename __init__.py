@@ -5,7 +5,7 @@ from . import lib_loader
 lib_loader.import_libs()
 
 # only then it can import external libraries
-from .utils import qr_utils, mesh_utils, material_utils
+from .utils import qr_utils, mesh_utils, material_utils, collection_utils
 
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
@@ -29,6 +29,9 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # step 2. get QR code matrix from user input
         qr_matrix = qr_utils.get_qr_matrix(input_data)
 
+        # step 3. create a new collection for storing QR code mesh
+        collection_utils.create_qr_code_collection()
+
         # step 3. create stone for duplicating throughout the QR code matrix
         # future plan: allow the user to choose stone size, shape, scale, how materials are assigned, etc.
         white_stone = mesh_utils.create_stone("white-stone", (1,1,0.3), (-1,1,0))
@@ -46,14 +49,14 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         black_stone.data.materials.clear()
         black_stone.data.materials.append(black_mat)
 
-        # step 6. build QR code by duplicating the white and black stones based on the QR code matrix
-        mesh_utils.build_qr_code(qr_matrix, white_stone, black_stone)
+        # # step 6. build QR code by duplicating the white and black stones based on the QR code matrix
+        # mesh_utils.build_qr_code(qr_matrix, white_stone, black_stone)
 
-        # step 7. hide the original stones from view
-        white_stone.hide_set(True)
-        white_stone.hide_render = True
-        black_stone.hide_set(True)
-        black_stone.hide_render = True
+        # # step 7. hide the original stones from view
+        # white_stone.hide_set(True)
+        # white_stone.hide_render = True
+        # black_stone.hide_set(True)
+        # black_stone.hide_render = True
         
         # step 8. apparently this return value is needed
         return {'FINISHED'}
