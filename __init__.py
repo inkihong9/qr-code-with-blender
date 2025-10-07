@@ -47,15 +47,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         black_stone.data.materials.append(black_mat)
 
         # step n. duplicate stone based on the QR code matrix
-        
-        # Example: create a circle mesh with user inputs
-        # bpy.ops.mesh.primitive_circle_add(
-        #     radius=1,
-        #     vertices=10,
-        #     enter_editmode=False,
-        #     align='WORLD',
-        #     location=(0, 0, 0)
-        # )
+
+        # step n+1. hide the original stones from view
         
         return {'FINISHED'}
 
