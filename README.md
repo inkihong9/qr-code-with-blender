@@ -18,7 +18,7 @@ i want this to be a blender add-on where a user inputs data and it creates a 3D 
     1. this seems to automatically install my extension, if not, then go to Edit > Preferences > Add-ons > install from disk
     2. make sure your add-on is enabled
 3. in blender, go to Edit > Preferences > Save & Load > "Auto Run Python Scripts" (enable)
-4. to reload the add-on changes (most likely python script changes), in blender, press F3 > type "Reload Scripts" > press Enter
+4. to reload the add-on changes, in VS code: Ctrl + Shift + P > Blender: Reload Addons
 
 # to build an addon
 1. in the `qr_code_maker` directory, run command `blender --command extension build`

@@ -5,7 +5,7 @@ from . import lib_loader
 lib_loader.import_libs()
 
 # only then it can import external libraries
-from . import qr_utils, mesh_utils
+from .utils import qr_utils, mesh_utils, material_utils
 
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
@@ -30,18 +30,26 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         qr_matrix = qr_utils.get_qr_matrix(input_data)
 
         # step 3. create stone for duplicating throughout the QR code matrix
-        mesh_utils.create_stone()
+        # future plan: allow the user to choose stone size, shape, scale, how materials are assigned, etc.
+        white_stone = mesh_utils.create_stone("white-stone", (1,1,0.3), (-1,1,0))
+        black_stone = mesh_utils.create_stone("black-stone", (1,1,0.3), (-1,1.2,0))
 
-        # step 4. duplicate stone based on the QR code matrix
+        # step 4. create 2 materials: black and white
+        # future plan: allow user to choose colors in the popup if possible, white will be limited choices, but non-white color
+        #              will be a myriad of colors for high contrast
+        white_mat = material_utils.create_material("ivory-white", (1, 0.939, 0.584, 1))
+        black_mat = material_utils.create_material("jet-black", (0.002, 0.000607, 0.000911, 1))
+
+        # step 5. assign materials to stones
+        white_stone.data.materials.clear()
+        white_stone.data.materials.append(white_mat)
+        black_stone.data.materials.clear()
+        black_stone.data.materials.append(black_mat)
+
+        # step n. duplicate stone based on the QR code matrix
+
+        # step n+1. hide the original stones from view
         
-        # Example: create a circle mesh with user inputs
-        # bpy.ops.mesh.primitive_circle_add(
-        #     radius=1,
-        #     vertices=10,
-        #     enter_editmode=False,
-        #     align='WORLD',
-        #     location=(0, 0, 0)
-        # )
         return {'FINISHED'}
 
     # this function is called when the operator (Add > Mesh > Custom Mesh) is clicked
