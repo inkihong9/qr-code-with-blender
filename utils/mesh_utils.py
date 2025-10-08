@@ -15,6 +15,9 @@ def create_stone(name:str, scale:tuple, location:tuple):
     # move the stone to the "qr-code" collection
     qr_code_coll = bpy.data.collections['qr-code']
     qr_code_coll.objects.link(stone)
+
+    # remove the stone from the default collection
+    bpy.context.collection.objects.unlink(stone)
  
     return stone
 
@@ -29,26 +32,31 @@ def build_qr_code(qr_matrix, white_stone, black_stone):
     curr_y = 0
     curr_x = 0
 
-    for row in qr_matrix:
-        stone_copy = None
-        for col in row:
-            if col:
-                # duplicate black stone
+    # iterate through a row of bits
+    for row_of_bits in qr_matrix:
+
+        # iterate through each bit in the row
+        for bit in row_of_bits:
+
+            # initialize a variable to hold the duplicated stone for each bit
+            stone_copy = None
+
+            # each bit is 0 or 1 (or T/F), if 1 (T), duplicate black stone, else (F) duplicate white stone
+            if bit:
                 stone_copy = black_stone.copy()
                 stone_copy.data = black_stone.data.copy()
             else:
-                # duplicate white stone
                 stone_copy = white_stone.copy()
                 stone_copy.data = white_stone.data.copy()
 
+            # set the location of the duplicated stone
             stone_copy.location = (curr_x, curr_y, 0)
 
             # move the stone to the "qr-code" collection
             qr_code_coll = bpy.data.collections['qr-code']
             qr_code_coll.objects.link(stone_copy)
 
-            
-            bpy.context.collection.objects.unlink(stone_copy)
+            # increment x by 0.1 for the next stone
             curr_x += 0.1
 
         # at the end of each row, decrement y by 0.1 and reset x to 0
