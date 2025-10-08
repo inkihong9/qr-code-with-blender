@@ -1,4 +1,5 @@
 import bpy
+from .. import global_vars as gv
 
 
 '''
@@ -13,8 +14,7 @@ def create_stone(name:str, scale:tuple, location:tuple):
     stone.scale = scale
 
     # move the stone to the "qr-code" collection
-    qr_code_coll = bpy.data.collections['qr-code']
-    qr_code_coll.objects.link(stone)
+    gv.qr_code_coll.objects.link(stone)
 
     # remove the stone from the default collection
     bpy.context.collection.objects.unlink(stone)
@@ -28,7 +28,7 @@ qr_matrix param is a 2D list of booleans representing the QR code
 white_stone param is the white stone object to duplicate
 black_stone param is the black stone object to duplicate
 '''
-def build_qr_code(qr_matrix, white_stone, black_stone):
+def build_qr_code(qr_matrix):
     curr_y = 0
     curr_x = 0
 
@@ -43,18 +43,17 @@ def build_qr_code(qr_matrix, white_stone, black_stone):
 
             # each bit is 0 or 1 (or T/F), if 1 (T), duplicate black stone, else (F) duplicate white stone
             if bit:
-                stone_copy = black_stone.copy()
-                stone_copy.data = black_stone.data.copy()
+                stone_copy = gv.black_stone.copy()
+                stone_copy.data = gv.black_stone.data.copy()
             else:
-                stone_copy = white_stone.copy()
-                stone_copy.data = white_stone.data.copy()
+                stone_copy = gv.white_stone.copy()
+                stone_copy.data = gv.white_stone.data.copy()
 
             # set the location of the duplicated stone
             stone_copy.location = (curr_x, curr_y, 0)
 
             # move the stone to the "qr-code" collection
-            qr_code_coll = bpy.data.collections['qr-code']
-            qr_code_coll.objects.link(stone_copy)
+            gv.qr_code_coll.objects.link(stone_copy)
 
             # increment x by 0.1 for the next stone
             curr_x += 0.1

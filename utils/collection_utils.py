@@ -1,4 +1,6 @@
 import bpy
+from .. import global_vars as gv
+
 
 '''
 create a single collection and name it "qr-code"
@@ -15,6 +17,5 @@ def create_qr_code_collection():
         # Link the new collection to the Scene Collection
         bpy.context.scene.collection.children.link(new_collection)
         
-        print(f"Collection '{qr_code_coll_name}' created and linked to Scene Collection.")
-    else:
-        print(f"Collection '{qr_code_coll_name}' already exists.")
+        # Store the collection in global_vars
+        gv.qr_code_coll = new_collection
