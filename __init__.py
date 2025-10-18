@@ -51,7 +51,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.black_stone.data.materials.append(black_mat)
 
         # step 6. build QR code by duplicating the white and black stones based on the QR code matrix
-        mesh_utils.build_qr_code(qr_matrix)
+        # mesh_utils.build_qr_code(qr_matrix)
+        mesh_utils.build_qr_code_v2(qr_matrix)
 
         # step 7. hide the original stones from view
         gv.white_stone.hide_set(True)
