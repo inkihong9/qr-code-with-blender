@@ -72,6 +72,26 @@ def build_qr_code_v2(qr_matrix):
     curr_y = 0
     curr_x = 0
 
+    N = len(qr_matrix)
+    n = N - (gv.border * 2)
+
+    print("hello")
+
+    m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
+    i_start = ((N - m) // 2)
+    i_end = i_start + m
+
+    # 0 to 28 total = 29
+    # to determine start and end index for empty center
+    # i = ((N - m) / 2) - 1
+    #   = ((29 - 9) / 2) - 1
+    #   = (20 / 2) - 1
+    #   = 10 - 1
+    #   = 9
+    # j = i + m
+    #   = 9 + 9
+    #   = 18
+
     '''
     IH (2025-10-13): version 2 algorithm for building QR code with empty center
     need to compute: 
@@ -88,10 +108,10 @@ def build_qr_code_v2(qr_matrix):
     '''
 
     # iterate through a row of bits
-    for row_of_bits in qr_matrix:
+    for i, row_of_bits in enumerate(qr_matrix):
 
         # iterate through each bit in the row
-        for bit in row_of_bits:
+        for j, bit in enumerate(row_of_bits):
 
             # initialize a variable to hold the duplicated stone for each bit
             stone_copy = None
@@ -112,6 +132,11 @@ def build_qr_code_v2(qr_matrix):
 
             # increment x by 0.1 for the next stone
             curr_x += 0.1
+
+            if i_start <= i < i_end and i_start <= j < i_end:
+                # hide the current stone to create empty center
+                stone_copy.hide_set(True)
+                stone_copy.hide_render = True
 
         # at the end of each row, decrement y by 0.1 and reset x to 0
         curr_y -= 0.1
