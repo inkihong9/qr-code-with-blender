@@ -1,0 +1,57 @@
+user stories
+
+1. type: FEATURE (requires user story 9)
+   description: transform QR code for additional data
+   branch name: feature/transform-qr-code-for-additional-data
+
+2. type: FEATURE
+   description: create a github action workflow (cicd pipeline) so it will 
+                pip install QR code pip package and build the addon file
+                (run a command - pending) every time i'm ready to release a new version
+   branch name: feature/github-action-for-release
+
+3. type: FEATURE
+   description: create a separate menu item just for creating a QR code, 
+                instead of having it be a submenu under Add > Mesh > QR Code, 
+                the end result should be Add > QR Code
+   branch name: feature/menufy-qr-code
+
+4. type: SPIKE
+   description: find out if there is a 3rd party API to shorten the URL, maybe
+                something like bit.ly
+   branch name: N/A
+
+5. type: FEATURE
+   description: give users a list of bit art (by default right now it's a stone) that
+                will always work - this is a low priority
+   branch name: N/A
+
+6. type: FEATURE
+   description: give users the input parameters as follows:
+                * bit size: this will be the side length of the enclosing square
+                * padding: distance between the edge of bit's enclosing square and bit container
+                * spacing: distance between the bit containers
+   branch name: N/A
+
+7. type: FEATURE (requires user story 6)
+   description: create the QR code taking the input parameters from user story 6 into an account
+   todo: create a chart to illustrate the point
+   branch name: N/A
+
+8. type: SPIKE
+   description: test different QR codes of different versions, but with exactly the same
+                number of stones
+   todo: create a diagram to illustrate the point and what/how it needs to be tested
+   branch name: N/A
+
+9. type: FEATURE
+   description: give users the input parameter as follows:
+                * time interval: this will be the amount of time (in seconds) there should be 
+                                 between series of QR codes before flipping the bits to "create"
+                                 the next QR code in queue
+                * flip time: this will be the amount of time (in seconds) the bits will take
+                             to flip to "create" the next QR code in queue
+   todo: write a documentation to explain the difference more in detail
+   branch name: N/A
+
+10. type: FEATURE
