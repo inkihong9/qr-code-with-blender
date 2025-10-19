@@ -1,5 +1,8 @@
 user stories
 
+NOTE: any and all user stories that comes AFTER user story 2 is released
+      will ALWAYS be part of the release notes!
+
 1. type: FEATURE (requires user story 9)
    description: transform QR code for additional data
    branch name: feature/transform-qr-code-for-additional-data
