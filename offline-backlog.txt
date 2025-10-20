@@ -1,0 +1,10 @@
+TASK user story
+---------------
+summary: Gather the size of all versions of the QR code
+description: For each version of the QR code, record the size (side length) of each QR code,
+             purpose of this is to determine if there is/are any version(s) that has an even length,
+             so far all QR codes I've created have had odd length
+             another purpose is to find the least common factor of the length of all QR codes
+branch name: pending
+
+
