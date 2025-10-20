@@ -8,6 +8,11 @@ lib_loader.import_libs()
 from .utils import qr_utils, mesh_utils, material_utils, collection_utils
 from . import global_vars as gv
 
+# TODO: remove qr_code_ver_utils import when finished with SPIKE user story 
+#       (i'm offline now, can't remember which one)
+# temporarily import qr_code_ver_utils
+from .utils import qr_code_ver_utils
+
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
     """Add a Custom Mesh"""
@@ -25,20 +30,10 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
 
-        print("version | rows | columns | odd number of rows? | odd number of columns?")
-
-        for i in range(1, 41):
-            rows, cols = qr_utils.temp_get_qr_matrix(i)
-            version_cell = f"{i}".ljust(7, ' ')
-            rows_cell = f"{rows}".ljust(4, ' ')
-            cols_cell = f"{cols}".ljust(7, ' ')
-            odd_rows_cell = f"{rows % 2 == 1}".ljust(19, ' ')
-            odd_cols_cell = f"{cols % 2 == 1}".ljust(21, ' ')
-            print(f"{version_cell} | {rows_cell} | {cols_cell} | {odd_rows_cell} | {odd_cols_cell}")
-
-        
-        '''
-        task/qr-code-sizes: temporarily disable this entire function to get the sizes of the QR code of all versions
+        # TODO: remove print_qr_code_version_sizes function call when finished with SPIKE user story 
+        #       (i'm offline now, can't remember which one)
+        # temporarily start off with printing the QR code version sizes
+        qr_code_ver_utils.print_qr_code_version_sizes()
 
         # step 1. get user input
         input_data = self.data
@@ -76,8 +71,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.black_stone.hide_set(True)
         gv.black_stone.hide_render = True
 
-        '''
-        
         # step 8. apparently this return value is needed
         return {'FINISHED'}
 
