@@ -24,6 +24,22 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
+
+        print("version | rows | columns | odd number of rows? | odd number of columns?")
+
+        for i in range(1, 41):
+            rows, cols = qr_utils.temp_get_qr_matrix(i)
+            version_cell = f"{i}".ljust(7, ' ')
+            rows_cell = f"{rows}".ljust(4, ' ')
+            cols_cell = f"{cols}".ljust(7, ' ')
+            odd_rows_cell = f"{rows % 2 == 1}".ljust(19, ' ')
+            odd_cols_cell = f"{cols % 2 == 1}".ljust(21, ' ')
+            print(f"{version_cell} | {rows_cell} | {cols_cell} | {odd_rows_cell} | {odd_cols_cell}")
+
+        
+        '''
+        task/qr-code-sizes: temporarily disable this entire function to get the sizes of the QR code of all versions
+
         # step 1. get user input
         input_data = self.data
 
@@ -59,6 +75,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.white_stone.hide_render = True
         gv.black_stone.hide_set(True)
         gv.black_stone.hide_render = True
+
+        '''
         
         # step 8. apparently this return value is needed
         return {'FINISHED'}
