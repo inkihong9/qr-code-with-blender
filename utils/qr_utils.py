@@ -1,8 +1,11 @@
 import qrcode
 from .. import global_vars as gv
 
-# this function takes input data (string) and returns the QR code matrix
-# see https://pypi.org/project/qrcode/ for full documentation
+
+'''
+this function takes input data (string) and returns the QR code matrix
+see https://pypi.org/project/qrcode/ for full documentation
+'''
 def get_qr_matrix(data: str):
     qr = qrcode.QRCode(
         # 25% error correction capability
@@ -13,8 +16,6 @@ def get_qr_matrix(data: str):
     )
     qr.add_data(data)
     qr.make(fit=True)
-
-    # Get matrix
     matrix = qr.get_matrix()
 
     return matrix
