@@ -34,6 +34,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         #       (i'm offline now, can't remember which one)
         # temporarily start off with printing the QR code version sizes
         qr_code_ver_utils.print_qr_code_version_sizes()
+        lcm = qr_code_ver_utils.get_lcm([21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,109,113,117,121,125,129,133,137,141,145,149,153,157,161,165,169,173,177])
+        print(f"LCM of all QR code version sizes: {lcm}")
 
         # step 1. get user input
         input_data = self.data

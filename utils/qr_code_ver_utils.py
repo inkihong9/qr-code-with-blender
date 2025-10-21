@@ -3,6 +3,7 @@
 
 
 from . import qr_utils
+import math
 
 
 def print_qr_code_version_sizes():
@@ -16,3 +17,8 @@ def print_qr_code_version_sizes():
         odd_rows_cell = f"{rows % 2 == 1}".ljust(19, ' ')
         odd_cols_cell = f"{cols % 2 == 1}".ljust(21, ' ')
         print(f"{version_cell} | {rows_cell} | {cols_cell} | {odd_rows_cell} | {odd_cols_cell}")
+
+
+def get_lcm(nums: list[int]) -> int:
+    result = math.lcm(*nums)
+    return result
