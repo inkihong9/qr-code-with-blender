@@ -8,3 +8,8 @@ description: For each version of the QR code, record the size (side length) of e
 branch name: task/qr-code-sizes
 
 
+TASK user story
+---------------
+summary: Find out the LCD of all QR code sizes gathered
+description: I need to calculate the LCD of all QR code sizes gathered from task/qr-code-sizes branch
+branch name: task/qr-code-sizes-lcd

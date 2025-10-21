@@ -8,6 +8,11 @@ lib_loader.import_libs()
 from .utils import qr_utils, mesh_utils, material_utils, collection_utils
 from . import global_vars as gv
 
+# TODO: remove qr_code_ver_utils import when finished with SPIKE user story 
+#       (i'm offline now, can't remember which one)
+# temporarily import qr_code_ver_utils
+from .utils import qr_code_ver_utils
+
 
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
     """Add a Custom Mesh"""
@@ -24,6 +29,12 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
+
+        # TODO: remove print_qr_code_version_sizes function call when finished with SPIKE user story 
+        #       (i'm offline now, can't remember which one)
+        # temporarily start off with printing the QR code version sizes
+        qr_code_ver_utils.print_qr_code_version_sizes()
+
         # step 1. get user input
         input_data = self.data
 
@@ -59,7 +70,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.white_stone.hide_render = True
         gv.black_stone.hide_set(True)
         gv.black_stone.hide_render = True
-        
+
         # step 8. apparently this return value is needed
         return {'FINISHED'}
 
