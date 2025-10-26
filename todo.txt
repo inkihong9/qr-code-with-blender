@@ -1,0 +1,47 @@
+1. i need to figure out whether i want to use a pre-existing docker image OR create my own docker image
+2. i may want to create my own docker image instead
+3. if i decide to create my own docker image, run some experiments first, maybe ubuntu or alpine works fine
+
+============ sample Dockerfile =============
+
+FROM ubuntu:22.04
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    libx11-6 libxi6 libxxf86vm1 libxfixes3 libxrender1 libxrandr2 \
+    libasound2 libgl1 libegl1 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download official Blender 4.2 Linux release
+RUN wget https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz && \
+    tar -xf blender-4.2.0-linux-x64.tar.xz && \
+    mv blender-4.2.0-linux-x64 /opt/blender && \
+    ln -s /opt/blender/blender /usr/local/bin/blender
+
+WORKDIR /workspace
+ENTRYPOINT ["blender"]
+
+==============================================
+
+
+
+
+
+
+
+
+=========== inside the workflow ================
+
+    - name: Build custom Blender image
+      run: docker build -t my-blender:4.2 .
+
+    - name: Run Blender build
+      run: |
+        docker run --rm \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          my-blender:4.2 \
+          --command extension build
+
+=================================================
