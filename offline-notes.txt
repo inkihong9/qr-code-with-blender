@@ -1,5 +1,0 @@
-types: FEATURE, BUG, SPIKE, TEST, TASK
-summary: 1 sentence summary of the user story
-         if it's in a draft status, then always start with [DRAFT]
-description: what should be expected, how it should behave, expected vs actual, etc.
-branch name: (feature|bug|spike|test|task)/(issue-number)

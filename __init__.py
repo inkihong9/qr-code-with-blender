@@ -8,12 +8,6 @@ lib_loader.import_libs()
 from .utils import qr_utils, mesh_utils, material_utils, collection_utils
 from . import global_vars as gv
 
-# TODO: remove qr_code_ver_utils import when finished with SPIKE user story 
-#       (i'm offline now, can't remember which one)
-# temporarily import qr_code_ver_utils
-from .utils import qr_code_ver_utils
-
-
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
     """Add a Custom Mesh"""
     bl_idname = "mesh.add_custom_mesh"
@@ -29,13 +23,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
-
-        # TODO: remove print_qr_code_version_sizes function call when finished with SPIKE user story 
-        #       (i'm offline now, can't remember which one)
-        # temporarily start off with printing the QR code version sizes
-        qr_code_ver_utils.print_qr_code_version_sizes()
-        lcm = qr_code_ver_utils.get_lcm([21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,109,113,117,121,125,129,133,137,141,145,149,153,157,161,165,169,173,177])
-        print(f"LCM of all QR code version sizes: {lcm}")
 
         # step 1. get user input
         input_data = self.data
