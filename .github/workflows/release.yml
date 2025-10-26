@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: blender:3.6.2  # Official Blender image from Docker Hub (adjust version)
+      image: ghcr.io/blender/blender:3.6.2
 
     steps:
       - name: Checkout code
