@@ -4,6 +4,10 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - "feature/*"
+      - main
+
 
 jobs:
   build-and-release:
