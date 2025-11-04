@@ -13,6 +13,15 @@ from . import global_vars as gv
 _popup_ref = None
 
 
+# Each input URL in the dynamic input list
+class InputUrl(bpy.types.PropertyGroup):
+    value: bpy.props.StringProperty(
+        name="URL", 
+        default="", 
+        description="Input URL for QR code generation"
+    )
+
+
 # Each item in the list
 class MyItem(bpy.types.PropertyGroup):
     value: bpy.props.IntProperty(name="Value", default=1, min=1)
@@ -30,7 +39,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         default="https://github.com/inkihong9",
         description="Data to encode for creating QR code"
     )
-
     time_interval: bpy.props.IntProperty(
         name="Time Interval (1 - 60)",
         default=24,
@@ -38,7 +46,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         min=1, 
         max=60
     )
-
     flip_time: bpy.props.IntProperty(
         name="Flip Time (1 - 60)",
         default=12,
@@ -46,8 +53,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         min=1,
         max=60
     )
-
-    my_items: bpy.props.CollectionProperty(type=MyItem)
+    # my_items: bpy.props.CollectionProperty(type=MyItem)
+    urls: bpy.props.CollectionProperty(type=InputUrl)
 
 
     def draw(self, context):
@@ -57,14 +64,21 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         layout.prop(self, "time_interval")
         layout.prop(self, "flip_time")
 
-        layout.label(text="Dynamic Inputs:")
-        for i, item in enumerate(self.my_items):
+        # layout.label(text="Dynamic Inputs:")
+        # for i, item in enumerate(self.my_items):
+        #     row = layout.row(align=True)
+        #     row.prop(item, "value", text=f"Input {i+1}")
+        #     op = row.operator("myaddon.remove_item_in_popup", text="", icon="X")
+        #     op.index = i
+
+        layout.label(text="URLs:")
+        for i, item in enumerate(self.urls):
             row = layout.row(align=True)
-            row.prop(item, "value", text=f"Input {i+1}")
+            row.prop(item, "value", text=f"URL {i+1}")
             op = row.operator("myaddon.remove_item_in_popup", text="", icon="X")
             op.index = i
 
-        layout.operator("myaddon.add_item_in_popup", text="Add Input", icon="ADD").operator_id = self.bl_idname
+        layout.operator("myaddon.add_item_in_popup", text="Add URL", icon="ADD").operator_id = self.bl_idname
 
 
     # this function is called when OK is clicked in the popup modal
@@ -74,6 +88,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         input_data = self.data
         time_interval = self.time_interval
         flip_time = self.flip_time
+        input_urls = [item.value for item in self.urls]
 
         # step 2. get QR code matrix from user input
         qr_matrix = qr_utils.get_qr_matrix(input_data)
@@ -117,8 +132,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         _popup_ref = self  # store reference globally
 
         # Ensure at least one input exists to start
-        if not len(self.my_items):
-            self.my_items.add()
+        if not len(self.urls):
+            self.urls.add()
 
         # This makes the popup appear before execution
         return context.window_manager.invoke_props_dialog(self)
@@ -141,7 +156,7 @@ class MYADDON_OT_add_item_in_popup(bpy.types.Operator):
         global _popup_ref
         op = _popup_ref
         if op and op.bl_idname == self.operator_id:
-            op.my_items.add()
+            op.urls.add()
         return {'FINISHED'}
 
 
@@ -155,14 +170,15 @@ class MYADDON_OT_remove_item_in_popup(bpy.types.Operator):
         # Find the running operator instance
         global _popup_ref
         op = _popup_ref
-        if op and 0 <= self.index < len(op.my_items):
+        if op and 0 <= self.index < len(op.urls):
             op.my_items.remove(self.index)
         return {'FINISHED'}
     
 
 # Registration
 classes = (
-    MyItem,
+    # MyItem,
+    InputUrl,
     # MESH_OT_add_custom_mesh,
     MYADDON_OT_add_item_in_popup,
     MYADDON_OT_remove_item_in_popup,
@@ -173,7 +189,7 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.types.Scene.my_items = bpy.props.CollectionProperty(type=MyItem)
+    bpy.types.Scene.urls = bpy.props.CollectionProperty(type=InputUrl)
     bpy.utils.register_class(MESH_OT_add_custom_mesh)
     bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
     
@@ -182,7 +198,7 @@ def register():
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-    del bpy.types.Scene.my_items
+    del bpy.types.Scene.urls
     bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)
     bpy.utils.unregister_class(MESH_OT_add_custom_mesh)
 
