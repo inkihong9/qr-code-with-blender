@@ -21,11 +21,25 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         description="Data to encode for creating QR code"
     )
 
+    time_interval: bpy.props.IntProperty(
+        name="Time Interval",
+        default=24,
+        description="amount of frames there should be between series of QR codes before flipping the bits to 'create' the next QR code"
+    )
+
+    flip_time: bpy.props.IntProperty(
+        name="Flip Time",
+        default=12,
+        description="amount of frames the bits will take to flip to 'create' the next QR code"
+    )
+
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
 
         # step 1. get user input
         input_data = self.data
+        time_interval = self.time_interval
+        flip_time = self.flip_time
 
         # step 2. get QR code matrix from user input
         qr_matrix = qr_utils.get_qr_matrix(input_data)
