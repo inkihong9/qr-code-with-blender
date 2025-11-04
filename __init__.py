@@ -29,11 +29,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     # User input fields (appear in popup)
-    data: bpy.props.StringProperty(
-        name="Data",
-        default="https://github.com/inkihong9",
-        description="Data to encode for creating QR code"
-    )
     time_interval: bpy.props.IntProperty(
         name="Time Interval (1 - 60)",
         default=24,
@@ -54,7 +49,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     def draw(self, context):
         layout = self.layout
 
-        layout.prop(self, "data")
         layout.prop(self, "time_interval")
         layout.prop(self, "flip_time")
 
@@ -70,12 +64,17 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
-
         # step 1. get user input
-        input_data = self.data
         time_interval = self.time_interval
         flip_time = self.flip_time
         input_urls = [item.value for item in self.urls]
+        input_data = input_urls[0]
+
+        # TODO: step 1.5. do the validations, create a separate user story for this later
+        if input_urls == [''] or len(input_urls) == 0:
+            self.report({'ERROR'}, "At least one URL must be provided.")
+            return {'CANCELLED'}
+
 
         # step 2. get QR code matrix from user input
         qr_matrix = qr_utils.get_qr_matrix(input_data)
