@@ -22,15 +22,19 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     )
 
     time_interval: bpy.props.IntProperty(
-        name="Time Interval",
+        name="Time Interval (1 - 60)",
         default=24,
-        description="amount of frames there should be between series of QR codes before flipping the bits to 'create' the next QR code"
+        description="amount of frames there should be between series of QR codes before flipping the bits to 'create' the next QR code",
+        min=1, 
+        max=60
     )
 
     flip_time: bpy.props.IntProperty(
-        name="Flip Time",
+        name="Flip Time (1 - 60)",
         default=12,
-        description="amount of frames the bits will take to flip to 'create' the next QR code"
+        description="amount of frames the bits will take to flip to 'create' the next QR code",
+        min=1,
+        max=60
     )
 
     # this function is called when OK is clicked in the popup modal
