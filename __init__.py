@@ -8,6 +8,16 @@ lib_loader.import_libs()
 from .utils import qr_utils, mesh_utils, material_utils, collection_utils
 from . import global_vars as gv
 
+
+# global reference for the active popup operator
+_popup_ref = None
+
+
+# Each item in the list
+class MyItem(bpy.types.PropertyGroup):
+    value: bpy.props.IntProperty(name="Value", default=1, min=1)
+
+
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
     """Add a Custom Mesh"""
     bl_idname = "mesh.add_custom_mesh"
@@ -36,6 +46,26 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         min=1,
         max=60
     )
+
+    my_items: bpy.props.CollectionProperty(type=MyItem)
+
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.prop(self, "data")
+        layout.prop(self, "time_interval")
+        layout.prop(self, "flip_time")
+
+        layout.label(text="Dynamic Inputs:")
+        for i, item in enumerate(self.my_items):
+            row = layout.row(align=True)
+            row.prop(item, "value", text=f"Input {i+1}")
+            op = row.operator("myaddon.remove_item_in_popup", text="", icon="X")
+            op.index = i
+
+        layout.operator("myaddon.add_item_in_popup", text="Add Input", icon="ADD").operator_id = self.bl_idname
+
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
@@ -83,6 +113,13 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
     # this function is called when the operator (Add > Mesh > QR Code) is clicked
     def invoke(self, context, event):
+        global _popup_ref
+        _popup_ref = self  # store reference globally
+
+        # Ensure at least one input exists to start
+        if not len(self.my_items):
+            self.my_items.add()
+
         # This makes the popup appear before execution
         return context.window_manager.invoke_props_dialog(self)
 
@@ -91,14 +128,61 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 def menu_func(self, context):
     self.layout.operator(MESH_OT_add_custom_mesh.bl_idname,
                          text="QR Code")
+    
+
+class MYADDON_OT_add_item_in_popup(bpy.types.Operator):
+    bl_idname = "myaddon.add_item_in_popup"
+    bl_label = "Add Item in Popup"
+
+    operator_id: bpy.props.StringProperty()
+
+    def execute(self, context):
+        # Find the running operator instance
+        global _popup_ref
+        op = _popup_ref
+        if op and op.bl_idname == self.operator_id:
+            op.my_items.add()
+        return {'FINISHED'}
+
+
+class MYADDON_OT_remove_item_in_popup(bpy.types.Operator):
+    bl_idname = "myaddon.remove_item_in_popup"
+    bl_label = "Remove Item in Popup"
+
+    index: bpy.props.IntProperty()
+
+    def execute(self, context):
+        # Find the running operator instance
+        global _popup_ref
+        op = _popup_ref
+        if op and 0 <= self.index < len(op.my_items):
+            op.my_items.remove(self.index)
+        return {'FINISHED'}
+    
+
+# Registration
+classes = (
+    MyItem,
+    # MESH_OT_add_custom_mesh,
+    MYADDON_OT_add_item_in_popup,
+    MYADDON_OT_remove_item_in_popup,
+)
+
 
 # this function is called when the add-on is enabled in Edit > Preferences > Add-ons
 def register():
+    for cls in classes:
+        bpy.utils.register_class(cls)
+    bpy.types.Scene.my_items = bpy.props.CollectionProperty(type=MyItem)
     bpy.utils.register_class(MESH_OT_add_custom_mesh)
     bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
+    
 
 # this function is called when the add-on is disabled in Edit > Preferences > Add-ons
 def unregister():
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
+    del bpy.types.Scene.my_items
     bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)
     bpy.utils.unregister_class(MESH_OT_add_custom_mesh)
 
