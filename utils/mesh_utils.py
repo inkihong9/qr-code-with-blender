@@ -75,8 +75,6 @@ def build_qr_code_v2(qr_matrix):
     N = len(qr_matrix)
     n = N - (gv.border * 2)
 
-    print("hello")
-
     m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
     i_start = ((N - m) // 2)
     i_end = i_start + m
