@@ -8,12 +8,6 @@ lib_loader.import_libs()
 from .utils import qr_utils, mesh_utils, material_utils, collection_utils
 from . import global_vars as gv
 
-# TODO: remove qr_code_ver_utils import when finished with SPIKE user story 
-#       (i'm offline now, can't remember which one)
-# temporarily import qr_code_ver_utils
-from .utils import qr_code_ver_utils
-
-
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
     """Add a Custom Mesh"""
     bl_idname = "mesh.add_custom_mesh"
@@ -27,18 +21,29 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         description="Data to encode for creating QR code"
     )
 
+    time_interval: bpy.props.IntProperty(
+        name="Time Interval (1 - 60)",
+        default=24,
+        description="amount of frames there should be between series of QR codes before flipping the bits to 'create' the next QR code",
+        min=1, 
+        max=60
+    )
+
+    flip_time: bpy.props.IntProperty(
+        name="Flip Time (1 - 60)",
+        default=12,
+        description="amount of frames the bits will take to flip to 'create' the next QR code",
+        min=1,
+        max=60
+    )
+
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
 
-        # TODO: remove print_qr_code_version_sizes function call when finished with SPIKE user story 
-        #       (i'm offline now, can't remember which one)
-        # temporarily start off with printing the QR code version sizes
-        qr_code_ver_utils.print_qr_code_version_sizes()
-        lcm = qr_code_ver_utils.get_lcm([21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,109,113,117,121,125,129,133,137,141,145,149,153,157,161,165,169,173,177])
-        print(f"LCM of all QR code version sizes: {lcm}")
-
         # step 1. get user input
         input_data = self.data
+        time_interval = self.time_interval
+        flip_time = self.flip_time
 
         # step 2. get QR code matrix from user input
         qr_matrix = qr_utils.get_qr_matrix(input_data)
