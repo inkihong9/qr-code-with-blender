@@ -86,31 +86,34 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         collection_utils.create_qr_code_collection()
 
         # step 5. create stone for duplicating throughout the QR code matrix
+        gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
+
+        # step 5. create stone for duplicating throughout the QR code matrix
         # future plan: allow the user to choose stone size, shape, scale, how materials are assigned, etc.
-        gv.white_stone = mesh_utils.create_stone("white-stone", (1,1,0.3), (-1,1,0))
-        gv.black_stone = mesh_utils.create_stone("black-stone", (1,1,0.3), (-1,1.2,0))
+        # gv.white_stone = mesh_utils.create_stone("white-stone", (1,1,0.3), (-1,1,0))
+        # gv.black_stone = mesh_utils.create_stone("black-stone", (1,1,0.3), (-1,1.2,0))
 
         # step 6. create 2 materials: black and white
         # future plan: allow user to choose colors in the popup if possible, white will be limited choices, but non-white color
         #              will be a myriad of colors for high contrast
-        white_mat = material_utils.create_material("ivory-white", (1, 0.939, 0.584, 1))
-        black_mat = material_utils.create_material("jet-black", (0.002, 0.000607, 0.000911, 1))
+        # white_mat = material_utils.create_material("ivory-white", (1, 0.939, 0.584, 1))
+        # black_mat = material_utils.create_material("jet-black", (0.002, 0.000607, 0.000911, 1))
 
-        # step 7. assign materials to stones
-        gv.white_stone.data.materials.clear()
-        gv.white_stone.data.materials.append(white_mat)
-        gv.black_stone.data.materials.clear()
-        gv.black_stone.data.materials.append(black_mat)
+        # # step 7. assign materials to stones
+        # gv.white_stone.data.materials.clear()
+        # gv.white_stone.data.materials.append(white_mat)
+        # gv.black_stone.data.materials.clear()
+        # gv.black_stone.data.materials.append(black_mat)
 
-        # step 8. build QR code by duplicating the white and black stones based on the QR code matrix
-        # mesh_utils.build_qr_code(qr_matrix)
-        mesh_utils.build_qr_code_v2(qr_matrix)
+        # # step 8. build QR code by duplicating the white and black stones based on the QR code matrix
+        # # mesh_utils.build_qr_code(qr_matrix)
+        # mesh_utils.build_qr_code_v2(qr_matrix)
 
-        # step 9. hide the original stones from view
-        gv.white_stone.hide_set(True)
-        gv.white_stone.hide_render = True
-        gv.black_stone.hide_set(True)
-        gv.black_stone.hide_render = True
+        # # step 9. hide the original stones from view
+        # gv.white_stone.hide_set(True)
+        # gv.white_stone.hide_render = True
+        # gv.black_stone.hide_set(True)
+        # gv.black_stone.hide_render = True
 
         # step 10. apparently this return value is needed
         return {'FINISHED'}
