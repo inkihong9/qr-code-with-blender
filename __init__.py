@@ -22,11 +22,6 @@ class InputUrl(bpy.types.PropertyGroup):
     )
 
 
-# Each item in the list
-class MyItem(bpy.types.PropertyGroup):
-    value: bpy.props.IntProperty(name="Value", default=1, min=1)
-
-
 class MESH_OT_add_custom_mesh(bpy.types.Operator):
     """Add a Custom Mesh"""
     bl_idname = "mesh.add_custom_mesh"
@@ -53,7 +48,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         min=1,
         max=60
     )
-    # my_items: bpy.props.CollectionProperty(type=MyItem)
     urls: bpy.props.CollectionProperty(type=InputUrl)
 
 
@@ -63,13 +57,6 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         layout.prop(self, "data")
         layout.prop(self, "time_interval")
         layout.prop(self, "flip_time")
-
-        # layout.label(text="Dynamic Inputs:")
-        # for i, item in enumerate(self.my_items):
-        #     row = layout.row(align=True)
-        #     row.prop(item, "value", text=f"Input {i+1}")
-        #     op = row.operator("myaddon.remove_item_in_popup", text="", icon="X")
-        #     op.index = i
 
         layout.label(text="URLs:")
         for i, item in enumerate(self.urls):
@@ -171,15 +158,13 @@ class MYADDON_OT_remove_item_in_popup(bpy.types.Operator):
         global _popup_ref
         op = _popup_ref
         if op and 0 <= self.index < len(op.urls):
-            op.my_items.remove(self.index)
+            op.urls.remove(self.index)
         return {'FINISHED'}
     
 
 # Registration
 classes = (
-    # MyItem,
     InputUrl,
-    # MESH_OT_add_custom_mesh,
     MYADDON_OT_add_item_in_popup,
     MYADDON_OT_remove_item_in_popup,
 )
