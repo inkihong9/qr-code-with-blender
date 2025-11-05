@@ -104,6 +104,8 @@ def create_stone_v2(name:str, scale:tuple, location:tuple):
     bmesh.update_edit_mesh(stone.data, loop_triangles=False, destructive=False)
     bpy.ops.object.mode_set(mode='OBJECT')
 
+    return stone
+
 
 
 '''
@@ -223,6 +225,83 @@ def build_qr_code_v2(qr_matrix):
         # at the end of each row, decrement y by 0.1 and reset x to 0
         curr_y -= 0.1
         curr_x = 0
+
+
+'''
+Builds a non-working N x N QR code by duplicating the original stone
+by a correct number of stones in x and y direction
+'''
+def build_qr_code_base():
+    hello = gv.qr_matrix_state_map
+    curr_y = 0
+    curr_x = 0
+    n = gv.qr_matrix_size
+    N = n + (gv.border * 2)
+    m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
+    i_start = ((N - m) // 2)
+    i_end = i_start + m
+
+    # iterate through 0 to gv.qr_matrix_size in y direction
+    for i in range(0, N):
+        
+        # iterate through 0 to gv.qr_matrix_size in x direction
+        for j in range(0, N):
+            
+            # duplicate the original stone
+            stone_copy = gv.stone.copy()
+            stone_copy.data = gv.stone.data.copy()
+            # set the location of the duplicated stone
+            stone_copy.location = (j * 0.1, -i * 0.1, 0)
+            # move the stone to the "qr-code" collection
+            gv.qr_code_coll.objects.link(stone_copy)
+
+            # increment x by 0.1 for the next stone
+            curr_x += 0.1
+
+            if i_start <= i < i_end and i_start <= j < i_end:
+                # hide the current stone to create empty center
+                stone_copy.hide_set(True)
+                stone_copy.hide_render = True
+
+        # at the end of each row, decrement y by 0.1 and reset x to 0
+        curr_y -= 0.1
+        curr_x = 0
+
+    # iterate through a row of bits
+    # for i, row_of_bits in enumerate(qr_matrix):
+
+    #     # iterate through each bit in the row
+    #     for j, bit in enumerate(row_of_bits):
+
+    #         # initialize a variable to hold the duplicated stone for each bit
+    #         stone_copy = None
+
+    #         # each bit is 0 or 1 (or T/F), if 1 (T), duplicate black stone, else (F) duplicate white stone
+    #         if bit:
+    #             stone_copy = gv.black_stone.copy()
+    #             stone_copy.data = gv.black_stone.data.copy()
+    #         else:
+    #             stone_copy = gv.white_stone.copy()
+    #             stone_copy.data = gv.white_stone.data.copy()
+
+    #         # set the location of the duplicated stone
+    #         stone_copy.location = (curr_x, curr_y, 0)
+
+    #         # move the stone to the "qr-code" collection
+    #         gv.qr_code_coll.objects.link(stone_copy)
+
+    #         # increment x by 0.1 for the next stone
+    #         curr_x += 0.1
+
+    #         if i_start <= i < i_end and i_start <= j < i_end:
+    #             # hide the current stone to create empty center
+    #             stone_copy.hide_set(True)
+    #             stone_copy.hide_render = True
+
+    #     # at the end of each row, decrement y by 0.1 and reset x to 0
+    #     curr_y -= 0.1
+    #     curr_x = 0
+
 
 
 '''

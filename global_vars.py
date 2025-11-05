@@ -1,11 +1,9 @@
 qr_code_coll = None
-white_stone = None
-black_stone = None
+# white_stone = None
+# black_stone = None
 stone = None
 qr_matrix = None
-border = 2
-# time_interval_description = "amount of frames there should be between series of QR codes before flipping the bits to 'create' the next QR code"
-# flip_time_description = "amount of frames the bits will take to flip to 'create' the next QR code"
+border = 4
 flip_time_input_params = {
     'name' : "Flip Time (1 - 60)",
     'default' : 12,
@@ -20,13 +18,9 @@ time_interval_input_params = {
     'min' : 1, 
     'max' : 60
 }
-
-# quick_test = ("Time Interval (1 - 60)", 24, "amount of frames there should be between series of QR codes before flipping the bits to 'create' the next QR code", 1, 60)
-
-# quick_test = {
-#         'name':"Time Interval (1 - 60)",
-#         'default':24,
-#         'description':"amount of frames there should be between series of QR codes before flipping the bits to 'create' the next QR code",
-#         'min':1, 
-#         'max':60
-#     }
+qr_matrix_size = 33 # default size for version 4 QR code
+qr_matrix_length = qr_matrix_size + (border * 2)
+qr_matrix_state_map = [
+    [False for _ in range(qr_matrix_length)] 
+    for _ in range(qr_matrix_length)
+]

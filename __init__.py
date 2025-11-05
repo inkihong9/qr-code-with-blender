@@ -5,7 +5,7 @@ from . import lib_loader
 lib_loader.import_libs()
 
 # only then it can import external libraries
-from .utils import qr_utils, mesh_utils, material_utils, collection_utils
+from .utils import qr_utils, mesh_utils, collection_utils
 from . import global_vars as gv
 
 
@@ -29,22 +29,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     # User input fields (appear in popup)
-    # time_interval: bpy.props.IntProperty(
-    #     name="Time Interval (1 - 60)",
-    #     default=24,
-    #     description=gv.time_interval_description,
-    #     min=1, 
-    #     max=60
-    # )
     time_interval: bpy.props.IntProperty(**gv.time_interval_input_params)
     flip_time: bpy.props.IntProperty(**gv.flip_time_input_params)
-    # flip_time: bpy.props.IntProperty(
-    #     name="Flip Time (1 - 60)",
-    #     default=12,
-    #     description=gv.flip_time_description,
-    #     min=1,
-    #     max=60
-    # )
     urls: bpy.props.CollectionProperty(type=InputUrl)
 
 
@@ -82,12 +68,21 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
             qr_matrix = qr_utils.get_qr_matrix(url)
             qr_matrices.append(qr_matrix)
 
-
         # step 4. create a new collection for storing QR code mesh
         collection_utils.create_qr_code_collection()
 
         # step 5. create stone for duplicating throughout the QR code matrix
         gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
+
+        # step 6. build the QR code base - all stones displaying black
+        mesh_utils.build_qr_code_base()
+
+        # step 7. build the QR code by flipping stones based on the QR code matrices
+        # mesh_utils.build_qr_code_v3(qr_matrices, time_interval, flip_time)
+
+        # step 8. hide the original stone from view
+        gv.stone.hide_set(True)
+        gv.stone.hide_render = True
 
         # TODO: DEPRECATED step 5. create stone for duplicating throughout the QR code matrix
         # future plan: allow the user to choose stone size, shape, scale, how materials are assigned, etc.
@@ -106,8 +101,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # gv.black_stone.data.materials.clear()
         # gv.black_stone.data.materials.append(black_mat)
 
-        # # step 7. build QR code by duplicating the white and black stones based on the QR code matrix
-        # # mesh_utils.build_qr_code(qr_matrix)
+        # TODO: DEPRECATED step 7. build QR code by duplicating the white and black stones based on the QR code matrix
+        # mesh_utils.build_qr_code(qr_matrix)
         # mesh_utils.build_qr_code_v2(qr_matrix)
 
         # # step 8. hide the original stones from view
