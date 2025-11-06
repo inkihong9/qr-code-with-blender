@@ -54,8 +54,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     def execute(self, context):
         # step 1. initialize and get user input
         qr_matrices = []
-        time_interval = self.time_interval
-        flip_time = self.flip_time
+        gv.saved_time_interval = self.time_interval
+        gv.saved_flip_time = self.flip_time
         input_urls = [item.value for item in self.urls]
         
         # TODO: step 2. do the validations on the input urls, create a separate user story for this later
@@ -74,11 +74,11 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # step 5. create stone for duplicating throughout the QR code matrix
         gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
 
-        # step 6. build the QR code base - all stones displaying black
+        # step 6. build the QR code base - all stones are switched ON
         mesh_utils.build_qr_code_base()
 
         # step 7. build the QR code by flipping stones based on the QR code matrices
-        # mesh_utils.build_qr_code_v3(qr_matrices, time_interval, flip_time)
+        mesh_utils.build_qr_code_v3(qr_matrices[0])
 
         # step 8. hide the original stone from view
         gv.stone.hide_set(True)

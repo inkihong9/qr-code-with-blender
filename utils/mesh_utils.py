@@ -1,4 +1,4 @@
-import bpy, bmesh
+import bpy, bmesh, math
 from .. import global_vars as gv
 from . import material_utils
 
@@ -232,7 +232,6 @@ Builds a non-working N x N QR code by duplicating the original stone
 by a correct number of stones in x and y direction
 '''
 def build_qr_code_base():
-    hello = gv.qr_matrix_state_map
     curr_y = 0
     curr_x = 0
     n = gv.qr_matrix_size
@@ -257,6 +256,9 @@ def build_qr_code_base():
 
             # increment x by 0.1 for the next stone
             curr_x += 0.1
+
+            # write the stone object's name into the global qr_matrix_stone_names
+            gv.qr_matrix_stone_names[i][j] = stone_copy.name
 
             if i_start <= i < i_end and i_start <= j < i_end:
                 # hide the current stone to create empty center
@@ -311,73 +313,126 @@ Duplicate the stone regardless of the bit value, but if the bit is ON, leave it 
 so it displays black. Else if the bit is OFF, flip it so it displays white.
 '''
 def build_qr_code_v3(qr_matrix):
-    curr_y = 0
-    curr_x = 0
-
-    N = len(qr_matrix)
-    n = N - (gv.border * 2)
-
+    n = gv.qr_matrix_size
+    N = n + (gv.border * 2)
     m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
     i_start = ((N - m) // 2)
     i_end = i_start + m
 
-    # 0 to 28 total = 29
-    # to determine start and end index for empty center
-    # i = ((N - m) / 2) - 1
-    #   = ((29 - 9) / 2) - 1
-    #   = (20 / 2) - 1
-    #   = 10 - 1
-    #   = 9
-    # j = i + m
-    #   = 9 + 9
-    #   = 18
+    # iterate through 0 to gv.qr_matrix_size in y direction
+    for i in range(0, N):
+        
+        # iterate through 0 to gv.qr_matrix_size in x direction
+        for j in range(0, N):
 
-    '''
-    IH (2025-10-13): version 2 algorithm for building QR code with empty center
-    need to compute: 
-    N - size of QR matrix (with border): N = len(qr_matrix)
-    n - size of QR matrix (without border): n = N - (gv.border * 2)
-      - length of QR matrix (n) for all versions of QR code
-    m - size of empty center (without border): m = not sure yet, but should be an odd number
-      - maybe floor(m/3), add 1 if even to make it odd
-      - need to experiment
-    i - start index for empty center
-    j - end index for empty center
-    1. determine the size of the qr_matrix (n x n) - 
-    2. calculate m as follows: m = ?? need to figure out the formula for this
-    '''
+            prev_bit = gv.qr_matrix_prev_state[i][j]
+            curr_bit = qr_matrix[i][j]
+            stone_name = gv.qr_matrix_stone_names[i][j]
+            stone_obj = bpy.data.objects.get(stone_name)
+            
+            if prev_bit != curr_bit and stone_obj:
+                # Deselect all first
+                bpy.ops.object.select_all(action='DESELECT')
+                
+                # Select and make it active
+                stone_obj.select_set(True)
+                bpy.context.view_layer.objects.active = stone_obj
 
-    # iterate through a row of bits
-    for i, row_of_bits in enumerate(qr_matrix):
+                # 2. Rotate by 180 degrees on X axis (in radians)
+                stone_obj.rotation_euler[0] += math.pi  # 180 degrees in radians
 
-        # iterate through each bit in the row
-        for j, bit in enumerate(row_of_bits):
+                # 3. Deselect the object
+                stone_obj.select_set(False)
+                bpy.context.view_layer.objects.active = None
+            
+            # duplicate the original stone
+        #     stone_copy = gv.stone.copy()
+        #     stone_copy.data = gv.stone.data.copy()
+        #     # set the location of the duplicated stone
+        #     stone_copy.location = (j * 0.1, -i * 0.1, 0)
+        #     # move the stone to the "qr-code" collection
+        #     gv.qr_code_coll.objects.link(stone_copy)
 
-            # initialize a variable to hold the duplicated stone for each bit
-            stone_copy = None
+        #     # increment x by 0.1 for the next stone
+        #     curr_x += 0.1
 
-            # each bit is 0 or 1 (or T/F), if 1 (T), duplicate black stone, else (F) duplicate white stone
-            if bit:
-                stone_copy = gv.black_stone.copy()
-                stone_copy.data = gv.black_stone.data.copy()
-            else:
-                stone_copy = gv.white_stone.copy()
-                stone_copy.data = gv.white_stone.data.copy()
+        #     if i_start <= i < i_end and i_start <= j < i_end:
+        #         # hide the current stone to create empty center
+        #         stone_copy.hide_set(True)
+        #         stone_copy.hide_render = True
 
-            # set the location of the duplicated stone
-            stone_copy.location = (curr_x, curr_y, 0)
+        # # at the end of each row, decrement y by 0.1 and reset x to 0
+        # curr_y -= 0.1
+        # curr_x = 0
 
-            # move the stone to the "qr-code" collection
-            gv.qr_code_coll.objects.link(stone_copy)
+    gv.qr_matrix_prev_state = qr_matrix
+    # curr_y = 0
+    # curr_x = 0
 
-            # increment x by 0.1 for the next stone
-            curr_x += 0.1
+    # N = len(qr_matrix)
+    # n = N - (gv.border * 2)
 
-            if i_start <= i < i_end and i_start <= j < i_end:
-                # hide the current stone to create empty center
-                stone_copy.hide_set(True)
-                stone_copy.hide_render = True
+    # m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
+    # i_start = ((N - m) // 2)
+    # i_end = i_start + m
 
-        # at the end of each row, decrement y by 0.1 and reset x to 0
-        curr_y -= 0.1
-        curr_x = 0
+    # # 0 to 28 total = 29
+    # # to determine start and end index for empty center
+    # # i = ((N - m) / 2) - 1
+    # #   = ((29 - 9) / 2) - 1
+    # #   = (20 / 2) - 1
+    # #   = 10 - 1
+    # #   = 9
+    # # j = i + m
+    # #   = 9 + 9
+    # #   = 18
+
+    # '''
+    # IH (2025-10-13): version 2 algorithm for building QR code with empty center
+    # need to compute: 
+    # N - size of QR matrix (with border): N = len(qr_matrix)
+    # n - size of QR matrix (without border): n = N - (gv.border * 2)
+    #   - length of QR matrix (n) for all versions of QR code
+    # m - size of empty center (without border): m = not sure yet, but should be an odd number
+    #   - maybe floor(m/3), add 1 if even to make it odd
+    #   - need to experiment
+    # i - start index for empty center
+    # j - end index for empty center
+    # 1. determine the size of the qr_matrix (n x n) - 
+    # 2. calculate m as follows: m = ?? need to figure out the formula for this
+    # '''
+
+    # # iterate through a row of bits
+    # for i, row_of_bits in enumerate(qr_matrix):
+
+    #     # iterate through each bit in the row
+    #     for j, bit in enumerate(row_of_bits):
+
+    #         # initialize a variable to hold the duplicated stone for each bit
+    #         stone_copy = None
+
+    #         # each bit is 0 or 1 (or T/F), if 1 (T), duplicate black stone, else (F) duplicate white stone
+    #         if bit:
+    #             stone_copy = gv.black_stone.copy()
+    #             stone_copy.data = gv.black_stone.data.copy()
+    #         else:
+    #             stone_copy = gv.white_stone.copy()
+    #             stone_copy.data = gv.white_stone.data.copy()
+
+    #         # set the location of the duplicated stone
+    #         stone_copy.location = (curr_x, curr_y, 0)
+
+    #         # move the stone to the "qr-code" collection
+    #         gv.qr_code_coll.objects.link(stone_copy)
+
+    #         # increment x by 0.1 for the next stone
+    #         curr_x += 0.1
+
+    #         if i_start <= i < i_end and i_start <= j < i_end:
+    #             # hide the current stone to create empty center
+    #             stone_copy.hide_set(True)
+    #             stone_copy.hide_render = True
+
+    #     # at the end of each row, decrement y by 0.1 and reset x to 0
+    #     curr_y -= 0.1
+    #     curr_x = 0

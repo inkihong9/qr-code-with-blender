@@ -20,7 +20,13 @@ time_interval_input_params = {
 }
 qr_matrix_size = 33 # default size for version 4 QR code
 qr_matrix_length = qr_matrix_size + (border * 2)
-qr_matrix_state_map = [
-    [False for _ in range(qr_matrix_length)] 
+qr_matrix_stone_names = [
+    ['' for _ in range(qr_matrix_length)] 
     for _ in range(qr_matrix_length)
 ]
+qr_matrix_prev_state = [
+    [True for _ in range(qr_matrix_length)] 
+    for _ in range(qr_matrix_length)
+]
+saved_time_interval = 0
+saved_flip_time = 0
