@@ -260,6 +260,9 @@ def build_qr_code_base():
             # write the stone object's name into the global qr_matrix_stone_names
             gv.qr_matrix_stone_names[i][j] = stone_copy.name
 
+            # insert the initial keyframe
+            stone_copy.keyframe_insert(data_path="rotation_euler", index=-1)
+
             if i_start <= i < i_end and i_start <= j < i_end:
                 # hide the current stone to create empty center
                 stone_copy.hide_set(True)
@@ -315,9 +318,15 @@ so it displays black. Else if the bit is OFF, flip it so it displays white.
 def build_qr_code_v3(qr_matrix):
     n = gv.qr_matrix_size
     N = n + (gv.border * 2)
-    m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
-    i_start = ((N - m) // 2)
-    i_end = i_start + m
+    # m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
+    # i_start = ((N - m) // 2)
+    # i_end = i_start + m
+
+    flip_time_keyframe = bpy.context.scene.frame_current + gv.saved_flip_time
+    time_interval_keyframe = flip_time_keyframe + gv.saved_time_interval
+
+    # Deselect all first
+    bpy.ops.object.select_all(action='DESELECT')
 
     # iterate through 0 to gv.qr_matrix_size in y direction
     for i in range(0, N):
@@ -329,21 +338,38 @@ def build_qr_code_v3(qr_matrix):
             curr_bit = qr_matrix[i][j]
             stone_name = gv.qr_matrix_stone_names[i][j]
             stone_obj = bpy.data.objects.get(stone_name)
-            
-            if prev_bit != curr_bit and stone_obj:
-                # Deselect all first
-                bpy.ops.object.select_all(action='DESELECT')
-                
+
+            if stone_obj:
                 # Select and make it active
                 stone_obj.select_set(True)
                 bpy.context.view_layer.objects.active = stone_obj
 
-                # 2. Rotate by 180 degrees on X axis (in radians)
-                stone_obj.rotation_euler[0] += math.pi  # 180 degrees in radians
+                # set the frame
+                bpy.context.scene.frame_set(flip_time_keyframe)
 
-                # 3. Deselect the object
+                if prev_bit != curr_bit:
+                    # Rotate by 180 degrees on X axis (in radians)
+                    stone_obj.rotation_euler[0] += math.pi
+                else:
+                    # Reset rotation to 360
+                    stone_obj.rotation_euler[0] += (math.pi*2)
+
+                # Insert keyframe for rotation at frame N
+                stone_obj.keyframe_insert(data_path="rotation_euler", index=-1)
+
+                # set the frame for time interval
+                bpy.context.scene.frame_set(time_interval_keyframe)
+
+                # Insert another keyframe
+                stone_obj.keyframe_insert(data_path="rotation_euler", index=-1)
+
+                # Deselect the object
                 stone_obj.select_set(False)
                 bpy.context.view_layer.objects.active = None
+            else:
+                print("Error: Stone object not found:", stone_name)
+            
+            
             
             # duplicate the original stone
         #     stone_copy = gv.stone.copy()

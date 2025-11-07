@@ -57,6 +57,9 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.saved_time_interval = self.time_interval
         gv.saved_flip_time = self.flip_time
         input_urls = [item.value for item in self.urls]
+
+        # step 1.5. set the frame back to 1
+        bpy.context.scene.frame_set(1)
         
         # TODO: step 2. do the validations on the input urls, create a separate user story for this later
         if input_urls == [''] or len(input_urls) == 0:
@@ -78,7 +81,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         mesh_utils.build_qr_code_base()
 
         # step 7. build the QR code by flipping stones based on the QR code matrices
-        mesh_utils.build_qr_code_v3(qr_matrices[0])
+        for qr_matrix in qr_matrices:
+            mesh_utils.build_qr_code_v3(qr_matrix)
 
         # step 8. hide the original stone from view
         gv.stone.hide_set(True)
