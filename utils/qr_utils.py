@@ -11,8 +11,11 @@ def get_qr_matrix(data: str):
         # 25% error correction capability
         error_correction=qrcode.constants.ERROR_CORRECT_Q,
 
-        # border around the qr code for improved readability, needs to be closer to white
+        # quite zone - border around the qr code for improved readability
         border=gv.border,
+
+        # QR code version
+        version=4, 
     )
     qr.add_data(data)
     qr.make(fit=True)

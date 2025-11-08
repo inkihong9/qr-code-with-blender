@@ -1,5 +1,32 @@
 qr_code_coll = None
-white_stone = None
-black_stone = None
+# white_stone = None
+# black_stone = None
+stone = None
 qr_matrix = None
-border = 0
+border = 4
+flip_time_input_params = {
+    'name' : "Flip Time (1 - 60)",
+    'default' : 12,
+    'description' : "Number of allocated frames for animating the bit flips",
+    'min' : 1, 
+    'max' : 60
+}
+time_interval_input_params = {
+    'name' : "Time Interval (1 - 60)",
+    'default' : 24,
+    'description' : "Number of frames between the different QR codes in the animation",
+    'min' : 1, 
+    'max' : 60
+}
+qr_matrix_size = 33 # default size for version 3 QR code
+qr_matrix_length = qr_matrix_size + (border * 2)
+qr_matrix_stone_names = [
+    ['' for _ in range(qr_matrix_length)] 
+    for _ in range(qr_matrix_length)
+]
+qr_matrix_prev_state = [
+    [True for _ in range(qr_matrix_length)] 
+    for _ in range(qr_matrix_length)
+]
+saved_time_interval = 0
+saved_flip_time = 0
