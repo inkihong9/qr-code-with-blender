@@ -70,6 +70,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         for url in input_urls:
             qr_matrix = qr_utils.get_qr_matrix(url)
             qr_matrices.append(qr_matrix)
+            print(f"url = {url}")
+            print(f"total length of QR code modules = {len(qr_matrix)}")
 
         # step 4. create a new collection for storing QR code mesh
         collection_utils.create_qr_code_collection()

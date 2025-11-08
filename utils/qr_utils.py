@@ -9,7 +9,7 @@ see https://pypi.org/project/qrcode/ for full documentation
 def get_qr_matrix(data: str):
     qr = qrcode.QRCode(
         # 25% error correction capability
-        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        error_correction=qrcode.constants.ERROR_CORRECT_Q,
 
         # quite zone - border around the qr code for improved readability
         border=gv.border,
