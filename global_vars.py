@@ -1,6 +1,4 @@
 qr_code_coll = None
-# white_stone = None
-# black_stone = None
 stone = None
 qr_matrix = None
 border = 4
@@ -30,3 +28,5 @@ qr_matrix_prev_state = [
 ]
 saved_time_interval = 0
 saved_flip_time = 0
+ivory_white_rgba = (1, 0.939, 0.584, 1)
+jet_black_rgba = (0.002, 0.000607, 0.000911, 1)
