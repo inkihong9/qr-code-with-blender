@@ -65,10 +65,16 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         if input_urls == [''] or len(input_urls) == 0:
             self.report({'ERROR'}, "At least one URL must be provided.")
             return {'CANCELLED'}
+        
+        # step 3 revised. grab the longest url by length
+        longest = max(input_urls, key=len)
+
+        # step 4. get a qr code matrix and qr code version of the longest url
+        ver, qr_len, matrix = qr_utils.get_qr_matrix(longest)
 
         # step 4. get QR code matrix from user input
         for url in input_urls:
-            qr_matrix = qr_utils.get_qr_matrix(url)
+            version, qr_length, qr_matrix = qr_utils.get_qr_matrix(data=url, ver=ver)
             qr_matrices.append(qr_matrix)
             print(f"url = {url}")
             print(f"total length of QR code modules = {len(qr_matrix)}")
@@ -80,7 +86,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
 
         # step 7. build the QR code base - all stones are switched ON
-        mesh_utils.build_qr_code_base()
+        mesh_utils.build_qr_code_base(qr_length=qr_len)
 
         # step 8. build the QR code by flipping stones based on the QR code matrices
         for qr_matrix in qr_matrices:

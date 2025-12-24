@@ -130,14 +130,25 @@ def build_qr_code_v2(qr_matrix):
 Builds a non-working N x N QR code by duplicating the original stone
 by a correct number of stones in x and y direction
 '''
-def build_qr_code_base():
+def build_qr_code_base(qr_length: int):
     curr_y = 0
     curr_x = 0
-    n = gv.qr_matrix_size
+    n = qr_length
     N = n + (gv.border * 2)
     m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
     i_start = ((N - m) // 2)
     i_end = i_start + m
+    gv.qr_matrix_size = n
+    gv.qr_matrix_length = N
+
+    gv.qr_matrix_stone_names = [
+        ['' for _ in range(N)] 
+        for _ in range(N)
+    ]
+    gv.qr_matrix_prev_state = [
+        [True for _ in range(N)] 
+        for _ in range(N)
+    ]
 
     # iterate through 0 to gv.qr_matrix_size in y direction
     for i in range(0, N):

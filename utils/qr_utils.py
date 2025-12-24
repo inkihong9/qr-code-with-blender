@@ -6,7 +6,7 @@ from .. import global_vars as gv
 this function takes input data (string) and returns the QR code matrix
 see https://pypi.org/project/qrcode/ for full documentation
 '''
-def get_qr_matrix(data: str):
+def get_qr_matrix(data: str, ver=None):
     qr = qrcode.QRCode(
         # 25% error correction capability
         error_correction=qrcode.constants.ERROR_CORRECT_Q,
@@ -14,14 +14,13 @@ def get_qr_matrix(data: str):
         # quite zone - border around the qr code for improved readability
         border=gv.border,
 
-        # QR code version
-        version=4, 
+        version=ver
     )
     qr.add_data(data)
     qr.make(fit=True)
-    matrix = qr.get_matrix()
 
-    return matrix
+    # get qr code version, qr code matrix
+    return qr.version, qr.modules_count, qr.get_matrix()
 
 
 # this functions takes version (should be 1 to 40) and returns the QR code size 
