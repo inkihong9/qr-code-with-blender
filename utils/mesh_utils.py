@@ -170,9 +170,6 @@ def build_qr_code_base(qr_length: int):
             # write the stone object's name into the global qr_matrix_stone_names
             gv.qr_matrix_stone_names[i][j] = stone_copy.name
 
-            # insert the initial keyframe
-            # stone_copy.keyframe_insert(data_path="rotation_euler", index=-1)
-
             if i_start <= i < i_end and i_start <= j < i_end:
                 # hide the current stone to create empty center
                 stone_copy.hide_set(True)
