@@ -94,8 +94,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # step 7. build the QR code base - all stones are switched ON
         mesh_utils.build_qr_code_base(qr_length=qr_len)
 
-        # before starting to flip the modules, insert keyframe for all stones in the QR code
-        # in bulk, not one at a time 
+        # step 8. insert keyframe for all stones in the QR code in bulk
         for obj in bpy.data.collections['qr-code'].all_objects:
             obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
