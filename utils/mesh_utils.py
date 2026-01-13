@@ -171,7 +171,7 @@ def build_qr_code_base(qr_length: int):
             gv.qr_matrix_stone_names[i][j] = stone_copy.name
 
             # insert the initial keyframe
-            stone_copy.keyframe_insert(data_path="rotation_euler", index=-1)
+            # stone_copy.keyframe_insert(data_path="rotation_euler", index=-1)
 
             if i_start <= i < i_end and i_start <= j < i_end:
                 # hide the current stone to create empty center
@@ -217,25 +217,25 @@ def build_qr_code_v3(qr_matrix):
                 # set the frame
                 bpy.context.scene.frame_set(flip_time_keyframe)
 
-                if prev_bit != curr_bit:
-                    # Rotate by 180 degrees on X axis (in radians)
-                    stone_obj.rotation_euler[0] += math.pi
-                else:
-                    # Reset rotation to 360
-                    stone_obj.rotation_euler[0] += (math.pi*2)
+                # if prev_bit != curr_bit:
+                #     # Rotate by 180 degrees on X axis (in radians)
+                #     stone_obj.rotation_euler[0] += math.pi
+                # else:
+                #     # Reset rotation to 360
+                #     stone_obj.rotation_euler[0] += (math.pi*2)
 
                 # Insert keyframe for rotation at frame N
-                stone_obj.keyframe_insert(data_path="rotation_euler", index=-1)
+                # stone_obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-                # set the frame for time interval
-                bpy.context.scene.frame_set(time_interval_keyframe)
+                # # set the frame for time interval
+                # bpy.context.scene.frame_set(time_interval_keyframe)
 
-                # Insert another keyframe
-                stone_obj.keyframe_insert(data_path="rotation_euler", index=-1)
+                # # Insert another keyframe
+                # stone_obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-                # Deselect the object
-                stone_obj.select_set(False)
-                bpy.context.view_layer.objects.active = None
+                # # Deselect the object
+                # stone_obj.select_set(False)
+                # bpy.context.view_layer.objects.active = None
             else:
                 print("Error: Stone object not found:", stone_name)
 
