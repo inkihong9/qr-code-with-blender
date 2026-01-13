@@ -8,6 +8,9 @@ lib_loader.import_libs()
 from .utils import qr_utils, mesh_utils, collection_utils
 from . import global_vars as gv
 
+# time module for time elapsed
+import time
+
 
 # global reference for the active popup operator
 _popup_ref = None
@@ -52,6 +55,9 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
+        # capture start time
+        start_time = round(time.time())
+
         # step 1. initialize and get user input
         qr_matrices = []
         gv.saved_time_interval = self.time_interval
@@ -89,12 +95,19 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         mesh_utils.build_qr_code_base(qr_length=qr_len)
 
         # step 8. build the QR code by flipping stones based on the QR code matrices
-        for qr_matrix in qr_matrices:
-            mesh_utils.build_qr_code_v3(qr_matrix)
+        # for qr_matrix in qr_matrices:
+        #     mesh_utils.build_qr_code_v3(qr_matrix)
 
-        # step 9. hide the original stone from view
-        gv.stone.hide_set(True)
-        gv.stone.hide_render = True
+        # # step 9. hide the original stone from view
+        # gv.stone.hide_set(True)
+        # gv.stone.hide_render = True
+
+        # capture end time
+        end_time = round(time.time())
+
+        # print both start and end time values
+        print(f"start = {start_time}, end = {end_time}")
+        print(f"time elapsed = {end_time - start_time} seconds")
 
         # step 10. apparently this return value is needed
         return {'FINISHED'}
