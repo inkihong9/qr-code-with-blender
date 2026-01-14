@@ -8,6 +8,9 @@ lib_loader.import_libs()
 from .utils import qr_utils, mesh_utils, collection_utils
 from . import global_vars as gv
 
+# time module for time elapsed
+import time
+
 
 # global reference for the active popup operator
 _popup_ref = None
@@ -52,6 +55,9 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
     # this function is called when OK is clicked in the popup modal
     def execute(self, context):
+        # capture start time
+        start_time = round(time.time())
+
         # step 1. initialize and get user input
         qr_matrices = []
         gv.saved_time_interval = self.time_interval
@@ -66,37 +72,64 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
             self.report({'ERROR'}, "At least one URL must be provided.")
             return {'CANCELLED'}
         
-        # step 3 revised. grab the longest url by length
+        # step 4. grab the longest url by length
         longest = max(input_urls, key=len)
 
-        # step 4. get a qr code matrix and qr code version of the longest url
+        # step 5. get a qr code matrix and qr code version of the longest url
         ver, qr_len, matrix = qr_utils.get_qr_matrix(longest)
 
-        # step 4. get QR code matrix from user input
+        # step 6. get QR code matrix from user input
         for url in input_urls:
             version, qr_length, qr_matrix = qr_utils.get_qr_matrix(data=url, ver=ver)
             qr_matrices.append(qr_matrix)
             print(f"url = {url}")
             print(f"total length of QR code modules = {len(qr_matrix)}")
 
-        # step 5. create a new collection for storing QR code mesh
+        # step 7. create a new collection for storing QR code mesh
         collection_utils.create_qr_code_collection()
 
-        # step 6. create stone for duplicating throughout the QR code matrix
+        # step 8. create stone for duplicating throughout the QR code matrix
         gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
 
-        # step 7. build the QR code base - all stones are switched ON
+        # step 9. build the QR code base - all stones are switched ON
         mesh_utils.build_qr_code_base(qr_length=qr_len)
 
-        # step 8. build the QR code by flipping stones based on the QR code matrices
-        for qr_matrix in qr_matrices:
-            mesh_utils.build_qr_code_v3(qr_matrix)
+        # step 10. insert keyframe for all stones in the QR code in bulk
+        for obj in bpy.data.collections['qr-code'].all_objects:
+            obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-        # step 9. hide the original stone from view
+        # step 11. build the QR code by flipping stones based on the QR code matrices
+        for qr_matrix in qr_matrices:
+
+            # step 11a. set the next frame numbers to insert the keyframes at, and transform the QR codes
+            flip_time_keyframe = bpy.context.scene.frame_current + gv.saved_flip_time
+            time_interval_keyframe = flip_time_keyframe + gv.saved_time_interval
+            bpy.context.scene.frame_set(flip_time_keyframe)
+            mesh_utils.build_qr_code(qr_matrix)
+
+            # step 11b. insert keyframe
+            for obj in bpy.data.collections['qr-code'].all_objects:
+                obj.keyframe_insert(data_path="rotation_euler", index=-1)
+
+            # step 11c. set the frame for time interval
+            bpy.context.scene.frame_set(time_interval_keyframe)
+
+            # step 11d. Insert another keyframe
+            for obj in bpy.data.collections['qr-code'].all_objects:
+                obj.keyframe_insert(data_path="rotation_euler", index=-1)
+
+        # step 12. hide the original stone from view
         gv.stone.hide_set(True)
         gv.stone.hide_render = True
 
-        # step 10. apparently this return value is needed
+        # capture end time
+        end_time = round(time.time())
+
+        # print both start and end time values
+        print(f"start = {start_time}, end = {end_time}")
+        print(f"time elapsed = {end_time - start_time} seconds")
+
+        # step 13. apparently this return value is needed
         return {'FINISHED'}
     
 
