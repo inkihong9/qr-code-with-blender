@@ -92,18 +92,19 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
 
         # step 9. build initial QR code
-        mesh_utils.build_initial_qr_code(qr_matrix=qr_len)
+        mesh_utils.build_initial_qr_code(qr_matrix=qr_matrices[0])
 
         # step 10. insert keyframe for all stones in the QR code in bulk
         for obj in bpy.data.collections['qr-code'].all_objects:
             obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
         # step 11. build the QR code by flipping stones based on the QR code matrices
-        for qr_matrix in qr_matrices:
+        for qr_matrix in qr_matrices[1:]:
 
             # step 11a. set the next frame numbers to insert the keyframes at, and transform the QR codes
             flip_time_keyframe = bpy.context.scene.frame_current + gv.saved_flip_time
-            time_interval_keyframe = flip_time_keyframe + gv.saved_time_interval
+            time_interval_keyframe =  flip_time_keyframe + gv.saved_time_interval
+            
             bpy.context.scene.frame_set(flip_time_keyframe)
             mesh_utils.build_qr_code(qr_matrix)
 
