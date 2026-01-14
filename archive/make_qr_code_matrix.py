@@ -3,16 +3,16 @@ import qrcode
 import math
 
 # Name of the object you want to select
-obj_name = "stone"
+obj_name = "module"
 
 # Deselect everything first
 bpy.ops.object.select_all(action='DESELECT')
 
 # Check if object exists
 if obj_name in bpy.data.objects:
-    stone = bpy.data.objects[obj_name]
-    stone.select_set(True)  # Select it
-    bpy.context.view_layer.objects.active = stone  # Make it the active object
+    module = bpy.data.objects[obj_name]
+    module.select_set(True)  # Select it
+    bpy.context.view_layer.objects.active = module  # Make it the active object
 else:
     print(f"Object '{obj_name}' not found")
 
@@ -47,9 +47,9 @@ for row in matrix:
 
     for col in row:
         # step 1: add icosphere
-        stone_copy = stone.copy()
-        stone_copy.data = stone.data.copy()
-        stone_copy.location = (curr_x, curr_y, 0)
+        module_copy = module.copy()
+        module_copy.data = module.data.copy()
+        module_copy.location = (curr_x, curr_y, 0)
 
         if col:
             # black color should face up
@@ -60,9 +60,9 @@ for row in matrix:
             # white color should face up
             # bpy.ops.object.report(type='INFO', message="black color should face up")
             print("black color should face up")
-            stone_copy.rotation_euler[0] = math.pi  # rotate 180 degrees around x-axis
+            module_copy.rotation_euler[0] = math.pi  # rotate 180 degrees around x-axis
 
-        bpy.context.collection.objects.link(stone_copy)
+        bpy.context.collection.objects.link(module_copy)
 
         
 
@@ -83,13 +83,13 @@ for row in matrix:
 
 
 # 2. Create a real duplicate with its own mesh data
-# stone_copy = stone.copy()
-# stone_copy.data = stone.data.copy()
-# stone_copy.name = "stone_copy"
-# stone_copy.location = (0, 0, 0)
+# module_copy = module.copy()
+# module_copy.data = module.data.copy()
+# module_copy.name = "module_copy"
+# module_copy.location = (0, 0, 0)
 
 # # Link the duplicate to the current collection
-# bpy.context.collection.objects.link(stone_copy)
+# bpy.context.collection.objects.link(module_copy)
 
 '''
 
@@ -191,7 +191,7 @@ bpy.ops.mesh.bisect(
     clear_inner=False,
     clear_outer=False
 )
-stone.active_material_index = 1  # White material slot
+module.active_material_index = 1  # White material slot
 bpy.ops.object.material_slot_set(assign=True)
 
 # Switch back to Object Mode
@@ -199,11 +199,11 @@ bpy.ops.object.mode_set(mode='OBJECT')
 
 
 # 2. Create a real duplicate with its own mesh data
-stone_copy = stone.copy()
-stone_copy.data = stone.data.copy()
-stone_copy.name = "stone_copy"
-stone_copy.location = (3, 0, 0)
+module_copy = module.copy()
+module_copy.data = module.data.copy()
+module_copy.name = "module_copy"
+module_copy.location = (3, 0, 0)
 
 # Link the duplicate to the current collection
-bpy.context.collection.objects.link(stone_copy)
+bpy.context.collection.objects.link(module_copy)
 '''

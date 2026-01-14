@@ -4,21 +4,21 @@ from . import material_utils
 
 
 '''
-create a single stone and return the object
+create a single module and return the object
 location param is a tuple of (x, y, z) coordinates
 '''
-def create_stone_v2(name:str, scale:tuple, location:tuple):
+def create_module_v2(name:str, scale:tuple, location:tuple):
     '''
-    step 1. create a stone mesh with these properties:
+    step 1. create a module mesh with these properties:
     - radius = 0.05m
     - coordinate = (-1m, 1m, 0m)
-    - name = stone
+    - name = module
     - scale z-axis by 30%
     '''
     bpy.ops.mesh.primitive_uv_sphere_add(radius=0.05, location=location)
-    stone = bpy.context.active_object
-    stone.name = name
-    stone.scale = scale
+    module = bpy.context.active_object
+    module.name = name
+    module.scale = scale
 
 
     '''
@@ -31,23 +31,23 @@ def create_stone_v2(name:str, scale:tuple, location:tuple):
     
 
     '''
-    step 3. assign materials to stone
+    step 3. assign materials to module
     '''
-    stone.data.materials.clear()
-    stone.data.materials.append(white_mat)
-    stone.data.materials.append(black_mat)
+    module.data.materials.clear()
+    module.data.materials.append(white_mat)
+    module.data.materials.append(black_mat)
 
     '''
-    step 4. color the stone
+    step 4. color the module
     - top half = jet black
     - bottom half = ivory white
     '''
     # Switch to Edit Mode
-    bpy.context.view_layer.objects.active = stone
+    bpy.context.view_layer.objects.active = module
     bpy.ops.object.mode_set(mode='EDIT')
 
     # Access the mesh in edit mode
-    mesh = bmesh.from_edit_mesh(stone.data)
+    mesh = bmesh.from_edit_mesh(module.data)
 
     # Deselect everything first
     for f in mesh.faces:
@@ -60,35 +60,32 @@ def create_stone_v2(name:str, scale:tuple, location:tuple):
             f.select = True
 
     # Update the selection in viewport
-    bmesh.update_edit_mesh(stone.data, loop_triangles=False, destructive=False)
+    bmesh.update_edit_mesh(module.data, loop_triangles=False, destructive=False)
 
     # Assign white material (slot 1) to selected faces
-    stone.active_material_index = 1
+    module.active_material_index = 1
     bpy.ops.object.material_slot_assign()
 
     # Update mesh and return to object mode
-    bmesh.update_edit_mesh(stone.data, loop_triangles=False, destructive=False)
+    bmesh.update_edit_mesh(module.data, loop_triangles=False, destructive=False)
     bpy.ops.object.mode_set(mode='OBJECT')
 
-    return stone
+    return module
 
 
 '''
-Builds a non-working N x N QR code by duplicating the original stone
-by a correct number of stones in x and y direction
+Builds the 1st QR code that is derived from the 1st URL in the user input
 '''
-def build_qr_code_base(qr_length: int):
-    curr_y = 0
-    curr_x = 0
-    n = qr_length
-    N = n + (gv.border * 2)
+def build_initial_qr_code(qr_matrix):
+    N = len(qr_matrix)
+    n = N - (gv.border * 2)
     m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
     i_start = ((N - m) // 2)
     i_end = i_start + m
     gv.qr_matrix_size = n
     gv.qr_matrix_length = N
 
-    gv.qr_matrix_stone_names = [
+    gv.qr_matrix_module_names = [
         ['' for _ in range(N)] 
         for _ in range(N)
     ]
@@ -103,24 +100,75 @@ def build_qr_code_base(qr_length: int):
         # iterate through 0 to gv.qr_matrix_size in x direction
         for j in range(0, N):
             
-            # duplicate the original stone
-            stone_copy = gv.stone.copy()
-            stone_copy.data = gv.stone.data.copy()
-            # set the location of the duplicated stone
-            stone_copy.location = (j * 0.1, -i * 0.1, 0)
-            # move the stone to the "qr-code" collection
-            gv.qr_code_coll.objects.link(stone_copy)
+            # duplicate the original module
+            module_copy = gv.module.copy()
+            module_copy.data = gv.module.data.copy()
+            # set the location of the duplicated module
+            module_copy.location = (j * 0.1, -i * 0.1, 0)
+            # move the module to the "qr-code" collection
+            gv.qr_code_coll.objects.link(module_copy)
 
-            # increment x by 0.1 for the next stone
-            curr_x += 0.1
+            # write the module object's name into the global qr_matrix_module_names
+            gv.qr_matrix_module_names[i][j] = module_copy.name
+            gv.qr_matrix_prev_state[i][j] = qr_matrix[i][j]
 
-            # write the stone object's name into the global qr_matrix_stone_names
-            gv.qr_matrix_stone_names[i][j] = stone_copy.name
+            if qr_matrix[i][j] == False: # white
+                module_copy.rotation_euler[0] = math.pi
 
             if i_start <= i < i_end and i_start <= j < i_end:
-                # hide the current stone to create empty center
-                stone_copy.hide_set(True)
-                stone_copy.hide_render = True
+                # hide the current module to create empty center
+                module_copy.hide_set(True)
+                module_copy.hide_render = True
+
+
+'''
+Builds a non-working N x N QR code by duplicating the original module
+by a correct number of modules in x and y direction
+'''
+def build_qr_code_base(qr_length: int):
+    curr_y = 0
+    curr_x = 0
+    n = qr_length
+    N = n + (gv.border * 2)
+    m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
+    i_start = ((N - m) // 2)
+    i_end = i_start + m
+    gv.qr_matrix_size = n
+    gv.qr_matrix_length = N
+
+    gv.qr_matrix_module_names = [
+        ['' for _ in range(N)] 
+        for _ in range(N)
+    ]
+    gv.qr_matrix_prev_state = [
+        [True for _ in range(N)] 
+        for _ in range(N)
+    ]
+
+    # iterate through 0 to gv.qr_matrix_size in y direction
+    for i in range(0, N):
+        
+        # iterate through 0 to gv.qr_matrix_size in x direction
+        for j in range(0, N):
+            
+            # duplicate the original module
+            module_copy = gv.module.copy()
+            module_copy.data = gv.module.data.copy()
+            # set the location of the duplicated module
+            module_copy.location = (j * 0.1, -i * 0.1, 0)
+            # move the module to the "qr-code" collection
+            gv.qr_code_coll.objects.link(module_copy)
+
+            # increment x by 0.1 for the next module
+            curr_x += 0.1
+
+            # write the module object's name into the global qr_matrix_module_names
+            gv.qr_matrix_module_names[i][j] = module_copy.name
+
+            if i_start <= i < i_end and i_start <= j < i_end:
+                # hide the current module to create empty center
+                module_copy.hide_set(True)
+                module_copy.hide_render = True
 
         # at the end of each row, decrement y by 0.1 and reset x to 0
         curr_y -= 0.1
@@ -128,9 +176,9 @@ def build_qr_code_base(qr_length: int):
 
 
 '''
-Iterate through the QR code matrix and build the QR code by duplicating the stone. 
-For each bit, if it's in the center area, skip duplicating the stone to create empty center.
-Duplicate the stone regardless of the bit value, but if the bit is ON, leave it as is, 
+Iterate through the QR code matrix and build the QR code by duplicating the module. 
+For each bit, if it's in the center area, skip duplicating the module to create empty center.
+Duplicate the module regardless of the bit value, but if the bit is ON, leave it as is, 
 so it displays black. Else if the bit is OFF, flip it so it displays white.
 '''
 def build_qr_code(qr_matrix):
@@ -148,22 +196,22 @@ def build_qr_code(qr_matrix):
 
             prev_bit = gv.qr_matrix_prev_state[i][j]
             curr_bit = qr_matrix[i][j]
-            stone_name = gv.qr_matrix_stone_names[i][j]
-            stone_obj = bpy.data.objects.get(stone_name)
+            module_name = gv.qr_matrix_module_names[i][j]
+            module_obj = bpy.data.objects.get(module_name)
 
-            if stone_obj:
+            if module_obj:
                 # Select and make it active
-                stone_obj.select_set(True)
-                bpy.context.view_layer.objects.active = stone_obj
+                module_obj.select_set(True)
+                bpy.context.view_layer.objects.active = module_obj
 
                 if prev_bit != curr_bit:
                     # Rotate by 180 degrees on X axis (in radians)
-                    stone_obj.rotation_euler[0] += math.pi
+                    module_obj.rotation_euler[0] += math.pi
                 else:
-                    # Reset rotation to 360
-                    stone_obj.rotation_euler[0] += (math.pi*2)
+                    # Rotate by 180 degrees on X axis (in radians)
+                    module_obj.rotation_euler[0] += (2 * math.pi)
 
             else:
-                print("Error: Stone object not found:", stone_name)
+                print("Error: module object not found:", module_name)
 
     gv.qr_matrix_prev_state = qr_matrix
