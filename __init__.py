@@ -16,6 +16,48 @@ import time
 _popup_ref = None
 
 
+class SimpleCustomMenu(bpy.types.Operator):
+    bl_idname = "object.add_custom_object"
+    bl_label = "Add Custom Object"
+    # bl_options = {'REGISTER', 'UNDO'}
+
+    
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "text")
+        layout.prop(self, "scale")
+        layout.prop(self, "rotation")
+        layout.prop(self, "center")
+        layout.prop(self, "extrude")
+        layout.prop(self, "extrude_amount")
+
+
+    # def execute(self, context):
+    #     bpy.ops.mesh.primitive_uv_sphere_add(radius=1, location=(0, 0, 0))
+    #     return {'FINISHED'}
+
+
+class CustomObjectOperator(bpy.types.Operator):
+    bl_idname = "object.custom_object"
+    bl_label = "Custom Object Operator"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    text: bpy.props.StringProperty(name="Enter Text", default="")
+    scale: bpy.props.FloatProperty(name="Scale", default=1.0)
+    rotation: bpy.props.BoolProperty(name="Z Up", default=False)
+    center: bpy.props.BoolProperty(name="Center Origin", default=False)
+    extrude: bpy.props.BoolProperty(name="Extrude", default=False)
+    extrude_amount: bpy.props.FloatProperty(name="Extrude Amount", default=0.06)
+
+    def execute(self, context):
+        # Perform actions based on user input
+        print(f"Text: {self.text}, Scale: {self.scale}")
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+
 # Each input URL in the dynamic input list
 class InputUrl(bpy.types.PropertyGroup):
     value: bpy.props.StringProperty(
@@ -150,6 +192,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 def menu_func(self, context):
     self.layout.operator(MESH_OT_add_custom_mesh.bl_idname,
                          text="QR Code")
+    self.layout.operator("object.custom_object", text="Custom Object")
     
 
 class MYADDON_OT_add_item_in_popup(bpy.types.Operator):
@@ -197,6 +240,10 @@ def register():
     bpy.types.Scene.urls = bpy.props.CollectionProperty(type=InputUrl)
     bpy.utils.register_class(MESH_OT_add_custom_mesh)
     bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
+    # added with feature/menufy-qr-code branch
+    bpy.utils.register_class(SimpleCustomMenu)
+    bpy.utils.register_class(CustomObjectOperator)
+    bpy.types.VIEW3D_MT_add.prepend(menu_func)
     
 
 # this function is called when the add-on is disabled in Edit > Preferences > Add-ons
@@ -206,6 +253,10 @@ def unregister():
     del bpy.types.Scene.urls
     bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)
     bpy.utils.unregister_class(MESH_OT_add_custom_mesh)
+    # added with feature/menufy-qr-code branch
+    bpy.utils.unregister_class(SimpleCustomMenu)
+    bpy.utils.unregister_class(CustomObjectOperator)
+    bpy.types.VIEW3D_MT_add.remove(menu_func)
 
 
 if __name__ == "__main__":
