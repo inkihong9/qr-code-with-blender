@@ -91,8 +91,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # step 8. create stone for duplicating throughout the QR code matrix
         gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
 
-        # step 9. build the QR code base - all stones are switched ON
-        mesh_utils.build_qr_code_base(qr_length=qr_len)
+        # step 9. build initial QR code
+        mesh_utils.build_initial_qr_code(qr_matrix=qr_len)
 
         # step 10. insert keyframe for all stones in the QR code in bulk
         for obj in bpy.data.collections['qr-code'].all_objects:

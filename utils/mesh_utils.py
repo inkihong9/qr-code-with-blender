@@ -74,6 +74,59 @@ def create_stone_v2(name:str, scale:tuple, location:tuple):
 
 
 '''
+Builds the 1st QR code that is derived from the 1st URL in the user input
+'''
+def build_initial_qr_code(qr_matrix):
+    curr_y = 0
+    curr_x = 0
+    n = len(qr_matrix)
+    N = n + (gv.border * 2)
+    m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
+    i_start = ((N - m) // 2)
+    i_end = i_start + m
+    gv.qr_matrix_size = n
+    gv.qr_matrix_length = N
+
+    gv.qr_matrix_stone_names = [
+        ['' for _ in range(N)] 
+        for _ in range(N)
+    ]
+    gv.qr_matrix_prev_state = [
+        [True for _ in range(N)] 
+        for _ in range(N)
+    ]
+
+    # iterate through 0 to gv.qr_matrix_size in y direction
+    for i in range(0, N):
+        
+        # iterate through 0 to gv.qr_matrix_size in x direction
+        for j in range(0, N):
+            
+            # duplicate the original stone
+            stone_copy = gv.stone.copy()
+            stone_copy.data = gv.stone.data.copy()
+            # set the location of the duplicated stone
+            stone_copy.location = (j * 0.1, -i * 0.1, 0)
+            # move the stone to the "qr-code" collection
+            gv.qr_code_coll.objects.link(stone_copy)
+
+            # increment x by 0.1 for the next stone
+            curr_x += 0.1
+
+            # write the stone object's name into the global qr_matrix_stone_names
+            gv.qr_matrix_stone_names[i][j] = stone_copy.name
+
+            if i_start <= i < i_end and i_start <= j < i_end:
+                # hide the current stone to create empty center
+                stone_copy.hide_set(True)
+                stone_copy.hide_render = True
+
+        # at the end of each row, decrement y by 0.1 and reset x to 0
+        curr_y -= 0.1
+        curr_x = 0
+
+
+'''
 Builds a non-working N x N QR code by duplicating the original stone
 by a correct number of stones in x and y direction
 '''
