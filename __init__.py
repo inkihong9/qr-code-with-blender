@@ -88,17 +88,17 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # step 7. create a new collection for storing QR code mesh
         collection_utils.create_qr_code_collection()
 
-        # step 8. create stone for duplicating throughout the QR code matrix
-        gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
+        # step 8. create module for duplicating throughout the QR code matrix
+        gv.module = mesh_utils.create_module_v2("module", (1,1,0.3), (-1,1,0))
 
         # step 9. build initial QR code
         mesh_utils.build_initial_qr_code(qr_matrix=qr_matrices[0])
 
-        # step 10. insert keyframe for all stones in the QR code in bulk
+        # step 10. insert keyframe for all modules in the QR code in bulk
         for obj in bpy.data.collections['qr-code'].all_objects:
             obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-        # step 11. build the QR code by flipping stones based on the QR code matrices
+        # step 11. build the QR code by flipping modules based on the QR code matrices
         for qr_matrix in qr_matrices[1:]:
 
             # step 11a. set the next frame numbers to insert the keyframes at, and transform the QR codes
@@ -119,9 +119,9 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
             for obj in bpy.data.collections['qr-code'].all_objects:
                 obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-        # step 12. hide the original stone from view
-        gv.stone.hide_set(True)
-        gv.stone.hide_render = True
+        # step 12. hide the original module from view
+        gv.module.hide_set(True)
+        gv.module.hide_render = True
 
         # capture end time
         end_time = round(time.time())

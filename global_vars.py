@@ -1,5 +1,5 @@
 qr_code_coll = None
-stone = None
+module = None
 qr_matrix = None
 border = 4
 flip_time_input_params = {
@@ -18,7 +18,7 @@ time_interval_input_params = {
 }
 qr_matrix_size = 33 # default size for version 3 QR code
 qr_matrix_length = qr_matrix_size + (border * 2)
-qr_matrix_stone_names = [
+qr_matrix_module_names = [
     ['' for _ in range(qr_matrix_length)] 
     for _ in range(qr_matrix_length)
 ]
