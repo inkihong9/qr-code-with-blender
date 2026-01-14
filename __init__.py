@@ -99,12 +99,25 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
             obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
         # step 8. build the QR code by flipping stones based on the QR code matrices
-        # for qr_matrix in qr_matrices:
-        #     mesh_utils.build_qr_code_v3(qr_matrix)
+        for qr_matrix in qr_matrices:
+            flip_time_keyframe = bpy.context.scene.frame_current + gv.saved_flip_time
+            time_interval_keyframe = flip_time_keyframe + gv.saved_time_interval
+            bpy.context.scene.frame_set(flip_time_keyframe)
+            mesh_utils.build_qr_code_v3(qr_matrix)
 
-        # # step 9. hide the original stone from view
-        # gv.stone.hide_set(True)
-        # gv.stone.hide_render = True
+            for obj in bpy.data.collections['qr-code'].all_objects:
+                obj.keyframe_insert(data_path="rotation_euler", index=-1)
+
+            # set the frame for time interval
+            bpy.context.scene.frame_set(time_interval_keyframe)
+
+            # Insert another keyframe
+            for obj in bpy.data.collections['qr-code'].all_objects:
+                obj.keyframe_insert(data_path="rotation_euler", index=-1)
+
+        # step 9. hide the original stone from view
+        gv.stone.hide_set(True)
+        gv.stone.hide_render = True
 
         # capture end time
         end_time = round(time.time())
