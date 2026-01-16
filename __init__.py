@@ -95,33 +95,44 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         mesh_utils.build_initial_qr_code(qr_matrix=qr_matrices[0])
 
         # step 10. insert keyframe for all modules in the QR code in bulk
+        #          this is frame 1
         for obj in bpy.data.collections['qr-code'].all_objects:
             obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
         # step 11. build the QR code by flipping modules based on the QR code matrices
-        for qr_matrix in qr_matrices[1:]:
+        start_idx = 1
+        end_keyframe = 0
+        n = len(qr_matrices)
+        for idx_0 in range(n):
 
-            # step 11a. set the next frame numbers to insert the keyframes at, and transform the QR codes
-            flip_time_keyframe = bpy.context.scene.frame_current + gv.saved_flip_time
-            time_interval_keyframe =  flip_time_keyframe + gv.saved_time_interval
-            
-            bpy.context.scene.frame_set(flip_time_keyframe)
+            # step 11a. get qr_matrix by idx_0
+            qr_matrix = qr_matrices[(start_idx + idx_0) % n]
+
+            # step 11a. calculate keyframes A and B
+            idx_1 = idx_0+1
+            distance = gv.saved_flip_time + gv.saved_time_interval
+            keyframe_A = (1 + gv.saved_flip_time) + (idx_0 * distance)
+            keyframe_B = 1 + (idx_1 * distance)
+            print(f"idx_0 = {idx_0}, idx_1 = {idx_1}, keyframe_A = {keyframe_A}, keyframe_B = {keyframe_B}")
+
+            # step 11b. set and insert keyframe A
+            bpy.context.scene.frame_set(keyframe_A)
             mesh_utils.build_qr_code(qr_matrix)
-
-            # step 11b. insert keyframe
             for obj in bpy.data.collections['qr-code'].all_objects:
                 obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-            # step 11c. set the frame for time interval
-            bpy.context.scene.frame_set(time_interval_keyframe)
-
-            # step 11d. Insert another keyframe
+            # step 11c. set and insert keyframe B, and reset end_keyframe
+            bpy.context.scene.frame_set(keyframe_B)
+            end_keyframe = keyframe_B - 1
             for obj in bpy.data.collections['qr-code'].all_objects:
                 obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
         # step 12. hide the original module from view
         gv.module.hide_set(True)
         gv.module.hide_render = True
+
+        # step 13. set new endframe
+        bpy.context.scene.frame_end = end_keyframe
 
         # capture end time
         end_time = round(time.time())
