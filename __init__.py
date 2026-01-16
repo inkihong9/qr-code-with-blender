@@ -132,7 +132,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.module.hide_render = True
 
         # step 13. set new endframe
-        
+        bpy.context.scene.frame_end = end_keyframe
 
         # capture end time
         end_time = round(time.time())
