@@ -34,9 +34,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     # User input fields (appear in popup)
     time_interval: bpy.props.IntProperty(**gv.time_interval_input_params)
     flip_time: bpy.props.IntProperty(**gv.flip_time_input_params)
-    module_size: bpy.props.FloatProperty(**gv.module_size_input_params)
-    padding: bpy.props.FloatProperty(**gv.padding_input_params)
-    spacing: bpy.props.FloatProperty(**gv.spacing_input_params)
+    will_include_logo: bpy.props.BoolProperty(**gv.will_include_logo_input_params)
+    quiet_zone: bpy.props.IntProperty(**gv.quiet_zone_input_params)
     urls: bpy.props.CollectionProperty(type=InputUrl)
 
 
@@ -45,9 +44,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
         layout.prop(self, "time_interval")
         layout.prop(self, "flip_time")
-        layout.prop(self, "module_size")
-        layout.prop(self, "padding")
-        layout.prop(self, "spacing")
+        layout.prop(self, "will_include_logo")
+        layout.prop(self, "quiet_zone")
 
         layout.label(text="URLs:")
         for i, item in enumerate(self.urls):
@@ -94,39 +92,51 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         # step 7. create a new collection for storing QR code mesh
         collection_utils.create_qr_code_collection()
 
-        # step 8. create stone for duplicating throughout the QR code matrix
-        gv.stone = mesh_utils.create_stone_v2("stone", (1,1,0.3), (-1,1,0))
+        # step 8. create module for duplicating throughout the QR code matrix
+        gv.module = mesh_utils.create_module_v2("module", (1,1,0.3), (-1,1,0))
 
-        # step 9. build the QR code base - all stones are switched ON
-        mesh_utils.build_qr_code_base(qr_length=qr_len)
+        # step 9. build initial QR code
+        mesh_utils.build_initial_qr_code(qr_matrix=qr_matrices[0])
 
-        # step 10. insert keyframe for all stones in the QR code in bulk
+        # step 10. insert keyframe for all modules in the QR code in bulk
+        #          this is frame 1
         for obj in bpy.data.collections['qr-code'].all_objects:
             obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-        # step 11. build the QR code by flipping stones based on the QR code matrices
-        for qr_matrix in qr_matrices:
+        # step 11. build the QR code by flipping modules based on the QR code matrices
+        start_idx = 1
+        end_keyframe = 0
+        n = len(qr_matrices)
+        for idx_0 in range(n):
 
-            # step 11a. set the next frame numbers to insert the keyframes at, and transform the QR codes
-            flip_time_keyframe = bpy.context.scene.frame_current + gv.saved_flip_time
-            time_interval_keyframe = flip_time_keyframe + gv.saved_time_interval
-            bpy.context.scene.frame_set(flip_time_keyframe)
+            # step 11a. get qr_matrix by idx_0
+            qr_matrix = qr_matrices[(start_idx + idx_0) % n]
+
+            # step 11a. calculate keyframes A and B
+            idx_1 = idx_0+1
+            distance = gv.saved_flip_time + gv.saved_time_interval
+            keyframe_A = (1 + gv.saved_flip_time) + (idx_0 * distance)
+            keyframe_B = 1 + (idx_1 * distance)
+            print(f"idx_0 = {idx_0}, idx_1 = {idx_1}, keyframe_A = {keyframe_A}, keyframe_B = {keyframe_B}")
+
+            # step 11b. set and insert keyframe A
+            bpy.context.scene.frame_set(keyframe_A)
             mesh_utils.build_qr_code(qr_matrix)
-
-            # step 11b. insert keyframe
             for obj in bpy.data.collections['qr-code'].all_objects:
                 obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-            # step 11c. set the frame for time interval
-            bpy.context.scene.frame_set(time_interval_keyframe)
-
-            # step 11d. Insert another keyframe
+            # step 11c. set and insert keyframe B, and reset end_keyframe
+            bpy.context.scene.frame_set(keyframe_B)
+            end_keyframe = keyframe_B - 1
             for obj in bpy.data.collections['qr-code'].all_objects:
                 obj.keyframe_insert(data_path="rotation_euler", index=-1)
 
-        # step 12. hide the original stone from view
-        gv.stone.hide_set(True)
-        gv.stone.hide_render = True
+        # step 12. hide the original module from view
+        gv.module.hide_set(True)
+        gv.module.hide_render = True
+
+        # step 13. set new endframe
+        bpy.context.scene.frame_end = end_keyframe
 
         # capture end time
         end_time = round(time.time())
