@@ -42,3 +42,4 @@ saved_time_interval = 0
 saved_flip_time = 0
 ivory_white_rgba = (1, 0.939, 0.584, 1)
 jet_black_rgba = (0.002, 0.000607, 0.000911, 1)
+will_include_logo = True

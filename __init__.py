@@ -66,6 +66,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         qr_matrices = []
         gv.saved_time_interval = self.time_interval
         gv.saved_flip_time = self.flip_time
+        gv.will_include_logo = self.will_include_logo
         input_urls = [item.value for item in self.urls]
 
         # step 2. force set the active frame back to 1

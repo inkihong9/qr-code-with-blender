@@ -79,9 +79,6 @@ Builds the 1st QR code that is derived from the 1st URL in the user input
 def build_initial_qr_code(qr_matrix):
     N = len(qr_matrix)
     n = N - (gv.border * 2)
-    m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
-    i_start = ((N - m) // 2)
-    i_end = i_start + m
     gv.qr_matrix_size = n
     gv.qr_matrix_length = N
 
@@ -94,6 +91,11 @@ def build_initial_qr_code(qr_matrix):
         for _ in range(N)
     ]
 
+    if gv.will_include_logo:
+        m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
+        i_start = ((N - m) // 2)
+        i_end = i_start + m
+        
     # iterate through 0 to gv.qr_matrix_size in y direction
     for i in range(0, N):
         
@@ -115,10 +117,11 @@ def build_initial_qr_code(qr_matrix):
             if qr_matrix[i][j] == False: # white
                 module_copy.rotation_euler[0] = math.pi
 
-            if i_start <= i < i_end and i_start <= j < i_end:
-                # hide the current module to create empty center
-                module_copy.hide_set(True)
-                module_copy.hide_render = True
+            if gv.will_include_logo:
+                if i_start <= i < i_end and i_start <= j < i_end:
+                    # hide the current module to create empty center
+                    module_copy.hide_set(True)
+                    module_copy.hide_render = True
 
 
 '''
