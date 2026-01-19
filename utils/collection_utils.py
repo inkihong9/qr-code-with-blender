@@ -2,9 +2,7 @@ import bpy
 from .. import global_vars as gv
 
 
-'''
-create a single collection and name it "qr-code"
-'''
+# create a single collection and name it "qr-code"
 def create_qr_code_collection():
     # Define the name of your new collection
     qr_code_coll_name = "qr-code"
