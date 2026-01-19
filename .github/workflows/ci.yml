@@ -1,14 +1,8 @@
-name: Install pip package
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-
+name: CI
+on: [push, pull_request]
 jobs:
   install:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
