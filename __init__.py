@@ -94,7 +94,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         collection_utils.create_qr_code_collection()
 
         # step 8. create module for duplicating throughout the QR code matrix
-        gv.module = mesh_utils.create_module_v2("module", (1,1,0.3), (-1,1,0))
+        gv.module = mesh_utils.create_module("module", (1,1,0.3), (-1,1,0))
 
         # step 9. build initial QR code
         mesh_utils.build_initial_qr_code(qr_matrix=qr_matrices[0])

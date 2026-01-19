@@ -7,7 +7,7 @@ from . import material_utils
 create a single module and return the object
 location param is a tuple of (x, y, z) coordinates
 '''
-def create_module_v2(name:str, scale:tuple, location:tuple):
+def create_module(name:str, scale:tuple, location:tuple):
     '''
     step 1. create a module mesh with these properties:
     - radius = 0.05m
@@ -122,60 +122,6 @@ def build_initial_qr_code(qr_matrix):
                     # hide the current module to create empty center
                     module_copy.hide_set(True)
                     module_copy.hide_render = True
-
-
-'''
-Builds a non-working N x N QR code by duplicating the original module
-by a correct number of modules in x and y direction
-'''
-def build_qr_code_base(qr_length: int):
-    curr_y = 0
-    curr_x = 0
-    n = qr_length
-    N = n + (gv.border * 2)
-    m = (n // 3) + (1 if (n // 3) % 2 == 0 else 0)
-    i_start = ((N - m) // 2)
-    i_end = i_start + m
-    gv.qr_matrix_size = n
-    gv.qr_matrix_length = N
-
-    gv.qr_matrix_module_names = [
-        ['' for _ in range(N)] 
-        for _ in range(N)
-    ]
-    gv.qr_matrix_prev_state = [
-        [True for _ in range(N)] 
-        for _ in range(N)
-    ]
-
-    # iterate through 0 to gv.qr_matrix_size in y direction
-    for i in range(0, N):
-        
-        # iterate through 0 to gv.qr_matrix_size in x direction
-        for j in range(0, N):
-            
-            # duplicate the original module
-            module_copy = gv.module.copy()
-            module_copy.data = gv.module.data.copy()
-            # set the location of the duplicated module
-            module_copy.location = (j * 0.1, -i * 0.1, 0)
-            # move the module to the "qr-code" collection
-            gv.qr_code_coll.objects.link(module_copy)
-
-            # increment x by 0.1 for the next module
-            curr_x += 0.1
-
-            # write the module object's name into the global qr_matrix_module_names
-            gv.qr_matrix_module_names[i][j] = module_copy.name
-
-            if i_start <= i < i_end and i_start <= j < i_end:
-                # hide the current module to create empty center
-                module_copy.hide_set(True)
-                module_copy.hide_render = True
-
-        # at the end of each row, decrement y by 0.1 and reset x to 0
-        curr_y -= 0.1
-        curr_x = 0
 
 
 '''
