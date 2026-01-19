@@ -1,12 +1,7 @@
-name: Build Blender Extension
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-
+name: CI
+on: [push, pull_request]
 jobs:
-  build:
+  install:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,5 +31,5 @@ jobs:
         run: |
           # Replace this with your actual build command
           echo "Running Blender extension build..."
-          echo "pretend this already did"
-          echi "done!"
+          echo "pretend that my extension is built successfully"
+          echo "done!"
