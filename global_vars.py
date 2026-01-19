@@ -16,6 +16,18 @@ time_interval_input_params = {
     'min' : 1, 
     'max' : 60
 }
+will_include_logo_input_params = {
+    'name' : "Will Include Logo?",
+    'default' : True,
+    'description' : "If flag is turned on, it will make a square hole in the center for logo to go in. Else, such hole will not be made"
+}
+quiet_zone_input_params = {
+    'name' : "Quiet Zone (0 - 5)",
+    'default' : 2,
+    'description' : "Border (quiet zone) thickness around the QR code",
+    'min' : 0, 
+    'max' : 5
+}
 qr_matrix_size = 33 # default size for version 3 QR code
 qr_matrix_length = qr_matrix_size + (border * 2)
 qr_matrix_module_names = [

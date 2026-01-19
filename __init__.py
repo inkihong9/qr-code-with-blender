@@ -34,6 +34,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
     # User input fields (appear in popup)
     time_interval: bpy.props.IntProperty(**gv.time_interval_input_params)
     flip_time: bpy.props.IntProperty(**gv.flip_time_input_params)
+    will_include_logo: bpy.props.BoolProperty(**gv.will_include_logo_input_params)
+    quiet_zone: bpy.props.IntProperty(**gv.quiet_zone_input_params)
     urls: bpy.props.CollectionProperty(type=InputUrl)
 
 
@@ -42,6 +44,8 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
 
         layout.prop(self, "time_interval")
         layout.prop(self, "flip_time")
+        layout.prop(self, "will_include_logo")
+        layout.prop(self, "quiet_zone")
 
         layout.label(text="URLs:")
         for i, item in enumerate(self.urls):
