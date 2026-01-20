@@ -29,7 +29,7 @@ jobs:
         run: ls -la libs
 
       - name: Build Blender Addon
-        uses: BlenderKit/blender-addon-build@v0.1
+        uses: BlenderKit/blender-addon-build@main
         with:
           name: 'QR Code Maker'
           name-suffix: 'commit-hash'
