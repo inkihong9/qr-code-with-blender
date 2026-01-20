@@ -10,7 +10,7 @@ jobs:
       - name: Create libs directory
         run: mkdir -p libs
 
-      - name: Install requests into libs folder
+      - name: Install qrcode into libs folder
         run: |
           pip install qrcode --target libs
 
@@ -22,8 +22,4 @@ jobs:
         uses: BlenderKit/blender-addon-build@main
         with:
           name: 'QR Code Maker'
-          name-suffix: 'commit-hash'
-          build-command: 'make build'
-          build-location: './build'
-          do-checkout: 'true'
-          exclude-files: '.git;.github;.gitignore'
+          exclude-files: '.git;.github;.gitignore;README.Md'
