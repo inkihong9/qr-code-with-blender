@@ -14,7 +14,7 @@ def get_qr_matrix(data: str, ver=None):
         error_correction=error_correction,
 
         # quite zone - border around the qr code for improved readability
-        border=gv.border,
+        border=gv.quiet_zone,
 
         version=ver
     )
@@ -33,7 +33,7 @@ def temp_get_qr_matrix(ver: int):
         error_correction=qrcode.constants.ERROR_CORRECT_Q,
 
         # border around the qr code for improved readability, needs to be closer to white
-        border=gv.border,
+        border=gv.quiet_zone,
 
         # QR code version
         version=ver
