@@ -22,8 +22,18 @@ jobs:
 
       - name: Install requests into libs folder
         run: |
-          pip install requests --target libs
+          pip install qrcode --target libs
 
       # OPTIONAL: verify installation
       - name: Verify installed packages
         run: ls -la libs
+
+      - name: Build Blender Addon
+        uses: BlenderKit/blender-addon-build-action@v1
+        with:
+          name: 'QR Code Maker'
+          name-suffix: 'commit-hash'
+          build-command: 'make build'
+          build-location: './build'
+          do-checkout: 'true'
+          exclude-files: '.git;.github;.gitignore'
