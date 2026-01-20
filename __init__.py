@@ -67,6 +67,7 @@ class MESH_OT_add_custom_mesh(bpy.types.Operator):
         gv.saved_time_interval = self.time_interval
         gv.saved_flip_time = self.flip_time
         gv.will_include_logo = self.will_include_logo
+        gv.quiet_zone = self.quiet_zone
         input_urls = [item.value for item in self.urls]
 
         # step 2. force set the active frame back to 1
@@ -181,6 +182,7 @@ class MYADDON_OT_add_item_in_popup(bpy.types.Operator):
         op = _popup_ref
         if op and op.bl_idname == self.operator_id:
             op.urls.add()
+            
         return {'FINISHED'}
 
 
@@ -196,6 +198,7 @@ class MYADDON_OT_remove_item_in_popup(bpy.types.Operator):
         op = _popup_ref
         if op and 0 <= self.index < len(op.urls):
             op.urls.remove(self.index)
+            
         return {'FINISHED'}
     
 
@@ -211,6 +214,7 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+
     bpy.types.Scene.urls = bpy.props.CollectionProperty(type=InputUrl)
     bpy.utils.register_class(MESH_OT_add_custom_mesh)
     bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
@@ -220,6 +224,7 @@ def register():
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
     del bpy.types.Scene.urls
     bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)
     bpy.utils.unregister_class(MESH_OT_add_custom_mesh)
