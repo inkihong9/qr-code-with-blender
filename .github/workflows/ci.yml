@@ -28,8 +28,10 @@ jobs:
         run: ls -la libs
 
       - name: Build Blender extension
-        run: |
-          # Replace this with your actual build command
-          echo "Running Blender extension build..."
-          echo "pretend that my extension is built successfully"
-          echo "done!"
+        uses: BlenderKit/blender-addon-build-action@v1
+        with:
+          name: 'MyAddon'
+          name-suffix: 'commit-hash'
+          build-command: 'make build'
+          build-location: './build'
+          exclude-files: '.git;.github;.gitignore'
