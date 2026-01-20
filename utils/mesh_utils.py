@@ -78,7 +78,7 @@ Builds the 1st QR code that is derived from the 1st URL in the user input
 '''
 def build_initial_qr_code(qr_matrix):
     N = len(qr_matrix)
-    n = N - (gv.border * 2)
+    n = N - (gv.quiet_zone * 2)
     gv.qr_matrix_size = n
     gv.qr_matrix_length = N
 
@@ -132,7 +132,7 @@ so it displays black. Else if the bit is OFF, flip it so it displays white.
 '''
 def build_qr_code(qr_matrix):
     n = gv.qr_matrix_size
-    N = n + (gv.border * 2)
+    N = n + (gv.quiet_zone * 2)
     
     # Deselect all first
     bpy.ops.object.select_all(action='DESELECT')

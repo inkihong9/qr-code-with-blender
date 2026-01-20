@@ -1,7 +1,7 @@
 qr_code_coll = None
 module = None
 qr_matrix = None
-border = 4
+quiet_zone = 0
 flip_time_input_params = {
     'name' : "Flip Time (1 - 60)",
     'default' : 12,
@@ -29,7 +29,7 @@ quiet_zone_input_params = {
     'max' : 5
 }
 qr_matrix_size = 33 # default size for version 3 QR code
-qr_matrix_length = qr_matrix_size + (border * 2)
+qr_matrix_length = qr_matrix_size + (quiet_zone * 2)
 qr_matrix_module_names = [
     ['' for _ in range(qr_matrix_length)] 
     for _ in range(qr_matrix_length)
