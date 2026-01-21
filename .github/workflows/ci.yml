@@ -14,16 +14,18 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
-        shell: bash
+      # - name: Upgrade pip
+      #   run: python -m pip install --upgrade pip
+      #   shell: bash
 
-      - name: Create libs directory
-        run: mkdir -p ./libs
-        shell: bash
+      # - name: Create libs directory
+      #   run: mkdir -p ./libs
+      #   shell: bash
 
-      - name: Install requests into libs folder
-        run: pip install qrcode --target libs
+      - name: Install qrcode into libs folder
+        run: |
+          python -m pip install --upgrade pip
+          pip install qrcode -t ./libs
         shell: bash
 
       # OPTIONAL: verify installation
