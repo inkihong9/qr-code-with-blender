@@ -1,8 +1,8 @@
 import bpy 
 
 # first thing it should do is import everything in the libs folder before doing anything else
-# from . import lib_loader
-# lib_loader.import_libs()
+from . import lib_loader
+lib_loader.import_libs()
 
 # only then it can import external libraries
 from .utils import qr_utils, mesh_utils, collection_utils

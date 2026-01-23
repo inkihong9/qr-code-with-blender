@@ -1,4 +1,4 @@
-from ..libs import qrcode
+import qrcode
 from .. import global_vars as gv
 
 
