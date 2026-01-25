@@ -1,5 +1,0 @@
-what i'm looking to do in this feature is give the user ability to:
-1. enter multiple data
-2. for the first data - create a brand new QR code
-3. for the remaining data - use the existing QR code and flip the stones accordingly
-4. by default, each QR code should be 0.67 seconds apart (see if i can retrieve fps from the blender API)
